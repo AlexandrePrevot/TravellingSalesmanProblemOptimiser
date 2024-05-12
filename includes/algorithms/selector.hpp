@@ -1,0 +1,4 @@
+namespace selector
+{
+    void justATest();
+}
