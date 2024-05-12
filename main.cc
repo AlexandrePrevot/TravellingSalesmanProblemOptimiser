@@ -1,6 +1,10 @@
 #include <iostream>
 
+#include "includes/selector.hpp"
+
+
 int main()
 {
-    std::cout << "hello world !" << std::endl;
+    selector::justATest();
+    std::cout << "salut";
 }
