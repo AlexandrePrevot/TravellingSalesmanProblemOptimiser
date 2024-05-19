@@ -1,3 +1,5 @@
+#pragma once
+
 struct Coordinate
 {
     void setX(double coord_x);
