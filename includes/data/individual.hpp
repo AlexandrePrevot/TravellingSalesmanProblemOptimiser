@@ -9,7 +9,7 @@ class Individual
     using CoordinateList = std::vector<Coordinate>;
 
 public:
-    Individual(const std::vector<Coordinate> &coordinate_list);
+    Individual(const CoordinateList &coordinate_list);
 
     ~Individual();
 
@@ -21,6 +21,9 @@ public:
 
     CoordinateList getCoordinateList() const;
     double getTotalDistance() const;
+
+    void setCoordinateList(const CoordinateList &coordinate_list);
+    void setTotalDistance(double distance);
 
 private:
     CoordinateList m_coordinate_list;

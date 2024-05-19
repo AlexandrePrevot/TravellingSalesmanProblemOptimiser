@@ -14,11 +14,20 @@ set(data_list
 
 list(TRANSFORM data_list PREPEND "src/data/")
 
+set(manager_list
+    IndividualManager.cc
+)
+
+list(TRANSFORM manager_list PREPEND "src/manager/")
+
 add_library(lib_algo STATIC ${algorithm_list})
 target_include_directories(lib_algo PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/includes)
 
 add_library(lib_data STATIC ${data_list})
 target_include_directories(lib_data PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/includes)
+
+add_library(lib_manager STATIC ${manager_list})
+target_include_directories(lib_manager PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/includes)
 
 add_executable(${PROJECT_NAME} main.cc)
 target_link_libraries(${PROJECT_NAME} PUBLIC lib_algo)

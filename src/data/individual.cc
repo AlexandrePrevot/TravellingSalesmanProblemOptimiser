@@ -37,3 +37,13 @@ double Individual::getTotalDistance() const
 {
     return m_total_distance;
 }
+
+void Individual::setCoordinateList(const std::vector<Coordinate> &coordinate_list)
+{
+    m_coordinate_list = coordinate_list;
+}
+
+void Individual::setTotalDistance(double distance)
+{
+    m_total_distance = distance;
+}

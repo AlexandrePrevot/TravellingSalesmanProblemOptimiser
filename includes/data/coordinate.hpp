@@ -2,6 +2,9 @@
 
 struct Coordinate
 {
+    double getX() const;
+    double getY() const;
+
     void setX(double coord_x);
     void setY(double coord_y);
 
