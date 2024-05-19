@@ -5,7 +5,7 @@ void IndividualManager::resetDistance(Individual &individual)
     double res_distance{0.};
     const std::vector<Coordinate> &coordinate_list = individual.getCoordinateList();
 
-    if (coordinate_list.empty())
+    if (coordinate_list.size() <= 1)
     {
         individual.setTotalDistance(res_distance);
     }
@@ -15,8 +15,8 @@ void IndividualManager::resetDistance(Individual &individual)
 
     for (const Coordinate &coord : coordinate_list)
     {
-        const double x_dist = coord.getX() - last_x;
-        const double y_dist = coord.getY() - last_y;
+        const double x_dist{coord.getX() - last_x};
+        const double y_dist{coord.getY() - last_y};
 
         res_distance += x_dist * x_dist + y_dist * y_dist;
 

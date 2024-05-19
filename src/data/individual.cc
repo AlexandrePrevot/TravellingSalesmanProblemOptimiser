@@ -7,6 +7,7 @@
 Individual::Individual(const std::vector<Coordinate> &coordinate_list)
 {
     m_coordinate_list = coordinate_list;
+    m_total_distance = 0.;
 }
 
 Individual::~Individual()
