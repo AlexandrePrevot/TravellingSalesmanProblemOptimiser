@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "manager/IndividualManager.hpp"
 
 void IndividualManager::resetDistance(Individual &individual)
@@ -25,4 +27,33 @@ void IndividualManager::resetDistance(Individual &individual)
     }
 
     individual.setTotalDistance(res_distance);
+}
+
+void IndividualManager::swapCoords(size_t idx_1, size_t idx_2, Individual &individual)
+{
+    std::vector<Coordinate> &coordinate_list{individual.getCoordinateList()};
+    const size_t size = coordinate_list.size();
+
+    if (idx_1 < 0)
+    {
+        return;
+    }
+
+    if (idx_1 >= size)
+    {
+        return;
+    }
+
+    if (idx_2 < 0)
+    {
+        return;
+    }
+
+    if (idx_2 >= size)
+    {
+        return;
+    }
+
+    std::swap(coordinate_list.at(idx_1), coordinate_list.at(idx_2));
+    resetDistance(individual);
 }

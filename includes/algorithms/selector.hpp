@@ -1,4 +1,10 @@
+#pragma once
+
+#include <vector>
+
+#include "data/individual.hpp"
+
 namespace selector
 {
-    void justATest();
+    void cutPopulation(double rate, std::vector<Individual> &population);
 }

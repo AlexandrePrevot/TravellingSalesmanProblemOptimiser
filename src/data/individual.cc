@@ -1,5 +1,6 @@
 #include "data/individual.hpp"
 
+#include <iostream>
 #include <vector>
 
 #include "data/coordinate.hpp"
@@ -29,7 +30,7 @@ Individual::Individual(Individual &&individual) noexcept
     individual.m_total_distance = 0.;
 }
 
-std::vector<Coordinate> Individual::getCoordinateList() const
+std::vector<Coordinate> &Individual::getCoordinateList()
 {
     return m_coordinate_list;
 }
@@ -47,4 +48,18 @@ void Individual::setCoordinateList(const std::vector<Coordinate> &coordinate_lis
 void Individual::setTotalDistance(double distance)
 {
     m_total_distance = distance;
+}
+
+std::ostream &operator<<(std::ostream &stream, const Individual &individual)
+{
+    const std::vector<Coordinate> &coordinate_list = individual.m_coordinate_list;
+    stream << "coordinate : ";
+    for (const Coordinate &coords : coordinate_list)
+    {
+        stream << "x : " << coords.getX() << " y : " << coords.getY() << ", ";
+    }
+
+    stream << "; distance : " << individual.getTotalDistance();
+
+    return stream;
 }
