@@ -6,6 +6,7 @@
 #include "data/coordinate.hpp"
 #include "data/individual.hpp"
 #include "manager/IndividualManager.hpp"
+#include "manager/MutationManager.hpp"
 
 int main()
 {
@@ -27,11 +28,22 @@ int main()
 
     std::cout << " individual : " << ind << std::endl;
 
-    std::cout << "number of ind " << vec_of_ind.size() << std::endl;
-    selector::cutPopulation(0.34, vec_of_ind);
-    std::cout << "number of ind " << vec_of_ind.size() << std::endl;
+    std::cout << "number of individual " << vec_of_ind.size() << std::endl;
+    selector::cutPopulation(0.99, vec_of_ind);
+    std::cout << "number of individual " << vec_of_ind.size() << std::endl;
 
     std::cout << "distance of ind is " << ind.getTotalDistance() << std::endl;
     IndividualManager::resetDistance(ind);
     std::cout << "distance of ind is " << ind.getTotalDistance() << std::endl;
+
+    std::cout << "mutation " << std::endl;
+    MutationManager mutation_manager;
+    mutation_manager.setMutationRate(0.75);
+    mutation_manager.setMutationPolicy(MutationManager::kSwap);
+
+    mutation_manager.mutateIndividual(ind);
+    std::cout << " individual : " << ind << std::endl;
+
+
+
 }

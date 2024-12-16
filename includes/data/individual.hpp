@@ -21,7 +21,7 @@ public:
 
     Individual(Individual &&individual) noexcept;
 
-    CoordinateList &getCoordinateList();
+    CoordinateList& getCoordinateList();
     double getTotalDistance() const;
 
     void setCoordinateList(const CoordinateList &coordinate_list);
