@@ -2,11 +2,25 @@
 
 struct Coordinate
 {
-    double getX() const;
-    double getY() const;
+    double getX() const
+    {
+        return m_x;
+    }
 
-    void setX(double coord_x);
-    void setY(double coord_y);
+    double getY() const
+    {
+        return m_y;
+    }
+
+    void setX(double coord_x)
+    {
+        m_x = coord_x;
+    }
+
+    void setY(double coord_y)
+    {
+        m_y = coord_y;
+    }
 
 private:
     double m_x{0.};

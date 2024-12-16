@@ -8,7 +8,6 @@ set(algorithm_list
 list(TRANSFORM algorithm_list PREPEND "src/algorithms/")
 
 set(data_list
-    coordinate.cc
     individual.cc
 )
 
