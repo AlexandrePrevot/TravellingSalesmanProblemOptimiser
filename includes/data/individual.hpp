@@ -5,7 +5,7 @@
 
 #include "coordinate.hpp"
 
-class Individual
+struct Individual
 {
     using CoordinateList = std::vector<Coordinate>;
 

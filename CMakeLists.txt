@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.28.3)
 project(TravellingSalesmanProblemOptimiser)
 
 set(algorithm_list
+    PopulationGenerator.cc
     selector.cc
 )
 
@@ -9,6 +10,7 @@ list(TRANSFORM algorithm_list PREPEND "src/algorithms/")
 
 set(data_list
     individual.cc
+    population.cc
 )
 
 list(TRANSFORM data_list PREPEND "src/data/")

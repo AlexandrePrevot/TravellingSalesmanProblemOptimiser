@@ -2,6 +2,7 @@
 
 struct Coordinate
 {
+public:
     double getX() const
     {
         return m_x;

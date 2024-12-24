@@ -2,9 +2,11 @@
 #include <vector>
 
 #include "algorithms/selector.hpp"
+#include "algorithms/PopulationGenerator.hpp"
 
 #include "data/coordinate.hpp"
 #include "data/individual.hpp"
+
 #include "manager/IndividualManager.hpp"
 #include "manager/MutationManager.hpp"
 
@@ -36,6 +38,8 @@ int main()
     IndividualManager::resetDistance(ind);
     std::cout << "distance of ind is " << ind.getTotalDistance() << std::endl;
 
+
+    // move mutation manager into /algorithms
     std::cout << "mutation " << std::endl;
     MutationManager mutation_manager;
     mutation_manager.setMutationRate(0.75);
@@ -44,6 +48,12 @@ int main()
     mutation_manager.mutateIndividual(ind);
     std::cout << " individual : " << ind << std::endl;
 
+
+    std::cout << "population generator" << std::endl;
+
+    Population population = PopulationGenerator::generateNewPopulation(10, 15, 50,50, 0, 0);
+
+    std::cout << population << std::endl;
 
 
 }

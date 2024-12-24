@@ -2,7 +2,7 @@
 
 #include "data/individual.hpp"
 
-class Population 
+struct Population 
 {
 public:
     std::vector<Individual>& getPopulation()
@@ -10,10 +10,8 @@ public:
         return m_population;
     }
 
-    void setPopulation(const std::vector<Individual>& population)
-    {
-        m_population = population;
-    }
+    // 0 indexed
+    friend std::ostream &operator<<(std::ostream &stream, Population& population);
 
 private:
     std::vector<Individual> m_population;
