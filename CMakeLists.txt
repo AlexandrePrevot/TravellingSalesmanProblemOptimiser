@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.28.3)
 project(TravellingSalesmanProblemOptimiser)
 
 set(algorithm_list
+    cross_over_operator.cc
     PopulationGenerator.cc
     selector.cc
 )

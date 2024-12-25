@@ -3,6 +3,7 @@
 
 #include "algorithms/selector.hpp"
 #include "algorithms/PopulationGenerator.hpp"
+#include "algorithms/cross_over_operator.hpp"
 
 #include "data/coordinate.hpp"
 #include "data/individual.hpp"
@@ -20,7 +21,7 @@ int main()
     coord_2.setX(20.);
     coord_2.setY(10.);
 
-    Individual ind({coord_1, coord_2});
+    Individual ind({0, 1});
 
     Individual ind_2(ind);
 
@@ -51,9 +52,14 @@ int main()
 
     std::cout << "population generator" << std::endl;
 
-    Population population = PopulationGenerator::generateNewPopulation(10, 15, 50,50, 0, 0);
+    Population population = PopulationGenerator::generateNewPopulation(10, 15);
 
     std::cout << population << std::endl;
 
+    std::cout << "cross over result between 1 and 2" << std::endl;
+
+    auto& result_population = population.getPopulation();
+
+    cross_over::crossOver(result_population[1], result_population[2]);
 
 }

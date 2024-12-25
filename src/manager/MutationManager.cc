@@ -22,7 +22,7 @@ bool MutationManager::mutateIndividual(Individual& individual) const
 
 void MutationManager::randomSwapMutation(Individual& individual) const
 {
-    std::vector<Coordinate> &coordinate_list = individual.getCoordinateList();
+    std::vector<int> &coordinate_list = individual.getCoordinateList();
     const std::size_t individual_size = coordinate_list.size();
 
     const int random_idx_1 = std::rand() % individual_size;

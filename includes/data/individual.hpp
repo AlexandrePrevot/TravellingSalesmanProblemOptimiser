@@ -7,7 +7,7 @@
 
 struct Individual
 {
-    using CoordinateList = std::vector<Coordinate>;
+    using CoordinateList = std::vector<int>;
 
 public:
     Individual() = default;
