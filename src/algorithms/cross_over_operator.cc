@@ -80,6 +80,56 @@ static void printMatrix(const std::unordered_map<int, std::unordered_set<int>>& 
     }
 }
 
+static int getNextNode(std::unordered_map<int, std::unordered_set<int>>& adjacency_matrix, int removed_node)
+{
+    /*
+        we have removed node
+
+        check if removed node has neighbours, take the one with the fewest neighbours
+        if equal take a random one
+
+        if no neighbours are found for removed node, take random next node in adjacency matrix
+    */
+
+    const auto neighbour_list = adjacency_matrix[removed_node];
+
+    if (neighbour_list.empty())
+    {
+        adjacency_matrix.erase(removed_node);
+        
+
+        const std::size_t length = adjacency_matrix.size();
+        const int next_node = rand()%(length);
+
+        auto it = std::begin(adjacency_matrix);
+        
+        for (int i = 0; i < next_node; i++)
+        {
+            it++;
+        }
+
+        return it->first;
+    }
+
+    int node_with_less_neighbour = adjacency_matrix.size();
+
+    for (const int neighbour : neighbour_list)
+    {
+        const auto neighbour_neighbours_list = adjacency_matrix.find(neighbour);
+
+        if (neighbour_neighbours_list == std::end(adjacency_matrix)) {
+            continue;
+        }
+
+        if (node_with_less_neighbour > neighbour_neighbours_list->second.size()) {
+            node_with_less_neighbour = neighbour_neighbours_list->first;
+        }
+    }
+
+    return node_with_less_neighbour;
+    
+}
+
 // see https://stackoverflow.com/questions/44376721/proper-edge-recombination-crossover-for-dna-assembly
 // for opimization
 Individual cross_over::crossOver(Individual& parent1, Individual& parent2)
@@ -92,12 +142,13 @@ Individual cross_over::crossOver(Individual& parent1, Individual& parent2)
     printMatrix(adjacency_matrix);
 
     
+    removeFromNeighboursList(adjacency_matrix, 3);
 
     std::cout << "after remove" << std::endl;
 
     printMatrix(adjacency_matrix);
 
-    
+    std::cout << "next node : " << getNextNode(adjacency_matrix, 3) << std::endl;
 
 
     return child;
