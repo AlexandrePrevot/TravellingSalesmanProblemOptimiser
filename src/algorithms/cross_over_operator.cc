@@ -43,11 +43,6 @@ static inline void removeFromNeighboursList(std::unordered_map<int, std::unorder
         }
 
         neighbour_neighbours_list->second.erase(to_remove);
-
-        if (neighbour_neighbours_list->second.empty())
-        {
-            adjacency_matrix.erase(neighbour_neighbours_list);
-        }
     }
 }
 
@@ -82,24 +77,44 @@ static void printMatrix(const std::unordered_map<int, std::unordered_set<int>>& 
 
 static int getNextNode(std::unordered_map<int, std::unordered_set<int>>& adjacency_matrix, int removed_node)
 {
-    /*
-        we have removed node
-
-        check if removed node has neighbours, take the one with the fewest neighbours
-        if equal take a random one
-
-        if no neighbours are found for removed node, take random next node in adjacency matrix
-    */
 
     const auto neighbour_list = adjacency_matrix[removed_node];
 
+    adjacency_matrix.erase(removed_node);
+
+    if (adjacency_matrix.empty()) return -1;
+
+    int min_nbr_of_neighbour = adjacency_matrix.size();
+    int node_with_less_neighbour = adjacency_matrix.size();
+
+    bool found = false;
+
+    for (const int neighbour : neighbour_list)
+    {
+        auto neighbour_neighbours_list = adjacency_matrix.find(neighbour);
+
+        if (neighbour_neighbours_list == std::end(adjacency_matrix)) {
+            continue;
+        }
+
+        if (min_nbr_of_neighbour > neighbour_neighbours_list->second.size()) {
+            found = true;
+            node_with_less_neighbour = neighbour_neighbours_list->first;
+            min_nbr_of_neighbour = neighbour_neighbours_list->second.size();
+        }
+    }
+
+    if (found) {
+        return node_with_less_neighbour;
+    }
+
+
+    // if the list of neighbours is empty
+    // just take a random node
     if (neighbour_list.empty())
     {
-        adjacency_matrix.erase(removed_node);
-        
-
         const std::size_t length = adjacency_matrix.size();
-        const int next_node = rand()%(length);
+        const int next_node = rand()%length;
 
         auto it = std::begin(adjacency_matrix);
         
@@ -111,21 +126,6 @@ static int getNextNode(std::unordered_map<int, std::unordered_set<int>>& adjacen
         return it->first;
     }
 
-    int node_with_less_neighbour = adjacency_matrix.size();
-
-    for (const int neighbour : neighbour_list)
-    {
-        const auto neighbour_neighbours_list = adjacency_matrix.find(neighbour);
-
-        if (neighbour_neighbours_list == std::end(adjacency_matrix)) {
-            continue;
-        }
-
-        if (node_with_less_neighbour > neighbour_neighbours_list->second.size()) {
-            node_with_less_neighbour = neighbour_neighbours_list->first;
-        }
-    }
-
     return node_with_less_neighbour;
     
 }
@@ -134,21 +134,24 @@ static int getNextNode(std::unordered_map<int, std::unordered_set<int>>& adjacen
 // for opimization
 Individual cross_over::crossOver(Individual& parent1, Individual& parent2)
 {
+    srand( time(NULL) );
     Individual child;
+
+    auto &child_coordinate_list = child.getCoordinateList();
+    const int desired_length = parent1.getCoordinateList().size();
+
+    child_coordinate_list.reserve(desired_length);
 
     auto adjacency_matrix = buildAdjacencyMatrix(parent1.getCoordinateList(), parent2.getCoordinateList());
 
+    int next_node = rand()%desired_length;
 
-    printMatrix(adjacency_matrix);
-
-    
-    removeFromNeighboursList(adjacency_matrix, 3);
-
-    std::cout << "after remove" << std::endl;
-
-    printMatrix(adjacency_matrix);
-
-    std::cout << "next node : " << getNextNode(adjacency_matrix, 3) << std::endl;
+    while (child_coordinate_list.size() < desired_length)
+    {
+        child_coordinate_list.push_back(next_node);
+        removeFromNeighboursList(adjacency_matrix, next_node);
+        next_node = getNextNode(adjacency_matrix, next_node);
+    }
 
 
     return child;

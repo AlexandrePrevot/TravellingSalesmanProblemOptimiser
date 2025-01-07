@@ -60,6 +60,8 @@ int main()
 
     auto& result_population = population.getPopulation();
 
-    cross_over::crossOver(result_population[1], result_population[2]);
+    const auto child = cross_over::crossOver(result_population[1], result_population[2]);
+
+    std::cout << child << std::endl;
 
 }
