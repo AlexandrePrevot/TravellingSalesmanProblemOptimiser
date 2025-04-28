@@ -59,3 +59,8 @@ void IndividualManager::swapCoords(size_t idx_1, size_t idx_2, Individual &indiv
     std::swap(coordinate_list.at(idx_1), coordinate_list.at(idx_2));
     resetDistance(individual);
 }
+
+void IndividualManager::copyTo(Individual& to_copy, Individual& target) {
+    target.setCoordinateList(to_copy.getCoordinateList());
+    target.setTotalDistance(to_copy.getTotalDistance());
+}

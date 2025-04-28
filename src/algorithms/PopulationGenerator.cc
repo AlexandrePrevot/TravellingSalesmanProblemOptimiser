@@ -8,6 +8,7 @@
 #include "data/individual.hpp"
 #include "data/coordinate.hpp"
 
+static auto rng = std::default_random_engine {};
 
 void PopulationGenerator::resetIndividual(Individual& individual, const double individual_size)
 {
@@ -20,13 +21,18 @@ void PopulationGenerator::resetIndividual(Individual& individual, const double i
     }
 }
 
+void PopulationGenerator::initializeIndividual(Individual& individual, const double individual_size)
+{
+    std::srand(std::time(nullptr));
+    auto& coordinate_list = individual.getCoordinateList();
+    resetIndividual(individual, individual_size);
+    std::shuffle(std::begin(coordinate_list), std::end(coordinate_list), rng);
+}
+
 
 // problems : always generating same population
 Population PopulationGenerator::generateNewPopulation(const int population_size, const double individual_size)
 {
-    std::srand(std::time(nullptr));
-    auto rng = std::default_random_engine {};
-
     Population new_population;
 
     auto& individual_list = new_population.getPopulation();
@@ -34,9 +40,7 @@ Population PopulationGenerator::generateNewPopulation(const int population_size,
 
     for (int i = 0; i < population_size; i++)
     {
-        auto& coordinate_list = individual_list[i].getCoordinateList();
-        resetIndividual(individual_list[i], individual_size);
-        std::shuffle(std::begin(coordinate_list), std::end(coordinate_list), rng);
+        initializeIndividual(individual_list[i], individual_size);
     }
 
     return new_population;

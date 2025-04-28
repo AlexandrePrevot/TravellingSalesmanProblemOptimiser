@@ -11,8 +11,11 @@
 #include "manager/IndividualManager.hpp"
 #include "manager/MutationManager.hpp"
 
+#include "algorithms/GeneticAlgorithm.hpp"
+
 int main()
 {
+    /*
     Coordinate coord_1;
     coord_1.setX(10.);
     coord_1.setY(10.);
@@ -63,5 +66,13 @@ int main()
     const auto child = cross_over::crossOver(result_population[1], result_population[2]);
 
     std::cout << child << std::endl;
+    */
+
+    GeneticAlgorithm algorithm;
+    algorithm.setIndividualSize(15);
+    algorithm.setPopulationSize(20);
+    algorithm.setSelectionRate(0.1);
+
+    std::cout << "is it a success : " << algorithm.process() << std::endl;
 
 }

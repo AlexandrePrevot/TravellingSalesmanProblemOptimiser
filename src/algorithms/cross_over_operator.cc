@@ -14,6 +14,9 @@ static inline void addToAdjacencyMatrix(std::unordered_map<int, std::unordered_s
     {
         const int current_node1 = coord_list[i];
 
+
+        // /!\ /!\ WARNING 
+        // to fix, if end of list, next node is start of list
         const int next_node1 = (i+1 < length) ? coord_list[i+1] : -1;
         const int previous_node1 = (i != 0) ? coord_list[i-1] : -1;
 
@@ -96,6 +99,9 @@ static int getNextNode(std::unordered_map<int, std::unordered_set<int>>& adjacen
         if (neighbour_neighbours_list == std::end(adjacency_matrix)) {
             continue;
         }
+
+        // /!\ WARNING /!\
+        // take a random one among neighbours having the same number of neighbours here ?
 
         if (min_nbr_of_neighbour > neighbour_neighbours_list->second.size()) {
             found = true;

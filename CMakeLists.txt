@@ -5,6 +5,7 @@ set(algorithm_list
     cross_over_operator.cc
     PopulationGenerator.cc
     selector.cc
+    GeneticAlgorithm.cc
 )
 
 list(TRANSFORM algorithm_list PREPEND "src/algorithms/")
