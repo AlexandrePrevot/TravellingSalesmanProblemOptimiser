@@ -13,6 +13,19 @@
 
 #include "algorithms/GeneticAlgorithm.hpp"
 
+/*
+    TODO
+    Use pointers to individual in Population
+    In individual manager : don't recalculate the distance entirely when swaping
+    maj to every file
+
+    use a specific formatted style
+    make sure everything is const when needed (sometimes I had to do weird trickes, you'll see)
+
+
+
+*/
+
 int main()
 {
     /*
@@ -68,10 +81,33 @@ int main()
     std::cout << child << std::endl;
     */
 
+    std::vector<Coordinate> map;
+#define Create(x,y) \
+{\
+    Coordinate coord;\
+    coord.setX(x);\
+    coord.setY(y); \
+    map.push_back(coord);\
+}
+
+    Create(-17, 35);
+    Create(-11, 1);
+    Create(23, 11);
+    Create(10, 5);
+    Create(3, 0);
+    Create(0, 0);
+    Create(21, 21);
+    Create(1, 34);
+    Create(3, 9);
+    Create(9, 13);
+
+#undef Create
+
     GeneticAlgorithm algorithm;
-    algorithm.setIndividualSize(15);
+    algorithm.setIndividualSize(map.size());
     algorithm.setPopulationSize(20);
     algorithm.setSelectionRate(0.1);
+    algorithm.setMap(map);
 
     std::cout << "is it a success : " << algorithm.process() << std::endl;
 

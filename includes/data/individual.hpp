@@ -17,7 +17,9 @@ public:
 
     Individual(const Individual &individual);
 
-    Individual &operator=(const Individual &individual) = delete;
+    // TODO : only use pointers to individual
+    // Individual &operator=(const Individual &individual) = delete; was stopping the sorting
+    Individual &operator=(const Individual &individual);
 
     Individual(Individual &&individual) noexcept;
 

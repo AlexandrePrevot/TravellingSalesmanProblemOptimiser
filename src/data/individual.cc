@@ -21,6 +21,18 @@ Individual::Individual(const Individual &individual)
     m_total_distance = individual.m_total_distance;
 }
 
+Individual &Individual::operator=(const Individual &individual)
+{
+    if (this == &individual) {
+        return *this;
+    }
+
+    m_coordinate_list = individual.m_coordinate_list;
+    m_total_distance = individual.m_total_distance;
+
+    return *this;
+}
+
 Individual::Individual(Individual &&individual) noexcept
 {
     m_total_distance = individual.m_total_distance;
