@@ -41,6 +41,7 @@ private:
 
     void setUpPopulation();
     void setUpBestIndividual();
+    void setUpIndividualManager();
 
     bool cycle();
 };

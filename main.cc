@@ -1,6 +1,9 @@
 #include <iostream>
 #include <vector>
 
+#include <cstdlib>
+#include <ctime>
+
 #include "algorithms/selector.hpp"
 #include "algorithms/PopulationGenerator.hpp"
 #include "algorithms/cross_over_operator.hpp"
@@ -18,6 +21,7 @@
     Use pointers to individual in Population
     In individual manager : don't recalculate the distance entirely when swaping
     maj to every file
+    in cross over ERO : take a random neighbour if they have same number of neihbours
 
     use a specific formatted style
     make sure everything is const when needed (sometimes I had to do weird trickes, you'll see)
@@ -81,6 +85,8 @@ int main()
     std::cout << child << std::endl;
     */
 
+    std::srand(std::time(0));
+
     std::vector<Coordinate> map;
 #define Create(x,y) \
 {\
@@ -109,6 +115,8 @@ int main()
     algorithm.setSelectionRate(0.1);
     algorithm.setMap(map);
 
-    std::cout << "is it a success : " << algorithm.process() << std::endl;
+    const bool success = algorithm.process();
+
+    std::cout << "is it a success : " << success << std::endl;
 
 }

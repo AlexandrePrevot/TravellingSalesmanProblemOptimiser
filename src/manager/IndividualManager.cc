@@ -7,11 +7,8 @@
 
 bool IndividualManager::mutateIndividual(Individual& individual) const
 {
-    std::srand(std::time(nullptr));
-
     const int random_value = std::rand() % 100; // should try to get a double value
-
-    if (random_value >= m_mutation_rate) {
+    if (random_value >= m_mutation_rate*100) {
         return false;
     }
 

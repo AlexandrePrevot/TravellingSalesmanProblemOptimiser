@@ -140,7 +140,7 @@ static int getNextNode(std::unordered_map<int, std::unordered_set<int>>& adjacen
 // for opimization
 Individual cross_over::crossOver(Individual& parent1, Individual& parent2)
 {
-    srand( time(NULL) );
+    //std::srand( time(NULL) );
     Individual child;
 
     auto &child_coordinate_list = child.getCoordinateList();

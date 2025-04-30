@@ -42,15 +42,12 @@ void GeneticAlgorithm::setUpBestIndividual() {
     }
 }
 
+void GeneticAlgorithm::setUpIndividualManager() {
+    m_individual_manager.setMutationRate(0.1);
+    m_individual_manager.setMutationPolicy(IndividualManager::kSwap);
+}
+
 bool GeneticAlgorithm::cycle() {
-    /*
-        take first m_selection_rate individuals
-
-        delete all the others, create offsprings from the first individuals
-        for each offspring do random mutation (according to mutation rate)
-        sort all the individuals
-    */
-
     const std::size_t to_keep = m_population_size * m_selection_rate;
 
     int individual_created = 0;
@@ -63,7 +60,9 @@ bool GeneticAlgorithm::cycle() {
 
             auto& individual_to_eliminate = m_population.getPopulation()[individual_created + to_keep];
             individual_to_eliminate = cross_over::crossOver(m_population.getPopulation()[i], m_population.getPopulation()[j]);
+            m_individual_manager.mutateIndividual(individual_to_eliminate);
             m_individual_manager.resetDistance(individual_to_eliminate);
+            individual_created++;
         }
 
         if (individual_created + to_keep >= m_population_size) {
@@ -72,6 +71,7 @@ bool GeneticAlgorithm::cycle() {
     }
 
     sortPopulation(m_population);
+    m_best_individual = m_population.getPopulation()[0];
     return true;
 }
 
@@ -106,27 +106,35 @@ bool GeneticAlgorithm::process() {
 
     setUpPopulation();
     setUpBestIndividual();
+    setUpIndividualManager();
 
     int stagnation_count_guard = 0;
 
 
     std::cout << "old population " << std::endl;
     std::cout << m_population << std::endl;
+    int generation_count = 0;
     while (stagnation_count_guard <= kMaxStagnationCount) {
         const double current_best = m_best_individual.getTotalDistance();
         cycle();
         const double new_best = m_best_individual.getTotalDistance();
 
+        //std::cout << "generation " << generation_count + 1 << std::endl;
+        //std::cout << m_population << std::endl;
+
         if (new_best < current_best) {
+            std::cout << "improvment in generation " << generation_count << std::endl;
             stagnation_count_guard = 0;
+            generation_count++;
             continue;
         }
 
         stagnation_count_guard++;
+        generation_count++;
     }
 
-    std::cout << "new population " << std::endl;
-    std::cout << m_population << std::endl;
+    std::cout << "needed " << generation_count << " generations" << std::endl;
+    std::cout << "best individual : " << m_best_individual << std::endl;
 
     return true;
 }
