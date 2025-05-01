@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package TSPO;
+
+message OptimizationRequest {
+    message Coordinate {
+        required double coordX  = 1;
+        required double coordY = 2;
+    }
+
+    repeated Coordinate coordinates = 1;
+}
