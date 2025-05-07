@@ -30,26 +30,30 @@
 
     use a specific formatted style
     make sure everything is const when needed (sometimes I had to do weird trickes, you'll see)
-
-
 */
 
-class GreeterServiceImpl final : public TSPO::Greeter::Service {
-    grpc::Status SayHello(grpc::ServerContext* server_context, const TSPO::HelloRequest* hello_request, TSPO::HelloReply* hello_reply) override {
-        const std::string prefix("Hello ");
-        std::cout << "received a message with name " << hello_request->name() << std::endl;
-        hello_reply->set_message(prefix + hello_request->name());
+
+class OptimizationServiceImpl final : public TSPO::Optimization::Service {
+    grpc::Status Optimize(grpc::ServerContext* server_context, const TSPO::OptimizationRequest* optimization_request, TSPO::OptimizationReply* optimization_reply) {
+        std::cout << "received message" << std::endl;
+        for (int i = 0; i < optimization_request->coordinates_size(); i++) {
+            const TSPO::OptimizationRequest::Coordinate& coordinate = optimization_request->coordinates(i);
+            std::cout << "coordX : " << coordinate.coordx() << " coordY : " << coordinate.coordy() << std::endl;
+        }
+        optimization_reply->set_accepted(true);
         return grpc::Status::OK;
     }
 };
 
+
+
 void RunServer() {
-  std::string server_address("0.0.0.0:50051");
-  GreeterServiceImpl service;
+  const std::string server_address("0.0.0.0:50051");
+  OptimizationServiceImpl optimization_service;
 
   grpc::ServerBuilder builder;
   builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
-  builder.RegisterService(&service);
+  builder.RegisterService(&optimization_service);
 
   std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
   std::cout << "Server listening on " << server_address << std::endl;

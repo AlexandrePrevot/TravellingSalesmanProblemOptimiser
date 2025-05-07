@@ -1,3 +1,2 @@
-./messages/generated/
-./frontend/generated/
-./frontend/venv
+./messages/generated
+./frontend/generated
