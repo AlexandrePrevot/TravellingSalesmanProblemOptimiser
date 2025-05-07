@@ -4,6 +4,8 @@
 #include <cstdlib>
 #include <ctime>
 
+#include <grpcpp/grpcpp.h>
+
 #include "algorithms/selector.hpp"
 #include "algorithms/PopulationGenerator.hpp"
 #include "algorithms/cross_over_operator.hpp"
@@ -16,6 +18,9 @@
 
 #include "algorithms/GeneticAlgorithm.hpp"
 
+#include "messages/generated/request.grpc.pb.h"
+#include "messages/generated/request.pb.h"
+
 /*
     TODO
     Use pointers to individual in Population
@@ -27,8 +32,30 @@
     make sure everything is const when needed (sometimes I had to do weird trickes, you'll see)
 
 
-
 */
+
+class GreeterServiceImpl final : public TSPO::Greeter::Service {
+    grpc::Status SayHello(grpc::ServerContext* server_context, const TSPO::HelloRequest* hello_request, TSPO::HelloReply* hello_reply) override {
+        const std::string prefix("Hello ");
+        std::cout << "received a message with name " << hello_request->name() << std::endl;
+        hello_reply->set_message(prefix + hello_request->name());
+        return grpc::Status::OK;
+    }
+};
+
+void RunServer() {
+  std::string server_address("0.0.0.0:50051");
+  GreeterServiceImpl service;
+
+  grpc::ServerBuilder builder;
+  builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
+  builder.RegisterService(&service);
+
+  std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
+  std::cout << "Server listening on " << server_address << std::endl;
+  server->Wait();
+}
+
 
 int main()
 {
@@ -84,6 +111,8 @@ int main()
 
     std::cout << child << std::endl;
     */
+
+    RunServer();
 
     std::srand(std::time(0));
 
