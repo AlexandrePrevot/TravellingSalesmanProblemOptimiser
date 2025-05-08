@@ -1,2 +1,2 @@
-./messages/generated
-./frontend/generated
+/messages/generated/**
+/frontend/generated/**
