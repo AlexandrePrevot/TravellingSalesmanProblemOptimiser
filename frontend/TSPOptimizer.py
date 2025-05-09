@@ -1,36 +1,18 @@
 import sys
 import os
 
-request_dir = os.path.abspath('generated')
-sys.path.insert(0, request_dir)
+communication_dir = os.path.abspath('communication')
+display_dir = os.path.abspath('display')
 
-import grpc
-import request_pb2
-import request_pb2_grpc
+sys.path.insert(0, communication_dir)
+sys.path.insert(1, display_dir)
 
-def run():
-    channel = grpc.insecure_channel('localhost:50051')
-    stub = request_pb2_grpc.OptimizationStub(channel)
-    optimization_req = request_pb2.OptimizationRequest()
-
-    coord1 = optimization_req.coordinates.add()
-    coord2 = optimization_req.coordinates.add()
-    coord3 = optimization_req.coordinates.add()
-
-    coord1.coordX = 12
-    coord1.coordY = 11
-
-    coord2.coordX = -5
-    coord2.coordY = 2
-
-    coord3.coordX = 17
-    coord3.coordY = 6
-
-    response = stub.Optimize(optimization_req)
-    print("Greeter client received: " + str(response.accepted))
-
-print("hello world!")
+import Communicator
+import MainWindow
 
 if __name__ == '__main__':
-    #run()
+    root = MainWindow.MainWindow()
+    root.setOptimizeAction(Communicator.run)
+    root.display()
+    
     

@@ -9,8 +9,8 @@ service Optimization {
 message OptimizationRequest {
     message Coordinate {
         // required field are not allowed in proto3
-        optional double coordX = 1;
-        optional double coordY = 2;
+        double coordX = 1;
+        double coordY = 2;
     }
 
     repeated Coordinate coordinates = 1;
