@@ -5,6 +5,7 @@ window_min_size = 1000
 window_max_size = 2000
 solution_window_ratio = 0.33
 point_size = 5
+line_width = 1
 
 class MainWindow:
     def __createAndAddPoint(self, event):
@@ -13,12 +14,16 @@ class MainWindow:
 
         self.__coordinates.append([posX, posY])
         self.solution_canvas.create_rectangle(posX, posY, posX + point_size, posY + point_size, fill="black")
-
-        if (len(self.__coordinates) == 5):
-            self.__optimize_action(self.__coordinates)
+    
+    def __showResult(self, solution):
+        size = len(solution)
+        for i in range(size - 1):
+            self.solution_canvas.create_line(solution[i][0],solution[i][1], solution[i+1][0],solution[i+1][1], width=line_width)
+        self.solution_canvas.create_line(solution[size - 1][0],solution[size - 1][1], solution[0][0],solution[0][1], width=line_width)
 
     def __init__(self):
         self.__coordinates = []
+        self.__optimize_action = None
 
         self.main_frame = tk.Tk()
         self.main_frame.title("Travelling Salesman Problem Optimizer")
@@ -53,14 +58,38 @@ class MainWindow:
         graph_canvas = tk.Canvas(graph_frame, width=graph_canvas_width, height=graph_canvas_height, bg="white", highlightthickness=0)
         graph_canvas.pack(pady=100)  # Centered vertically
 
+        button = tk.Button(self.main_frame, 
+                   text="Optimize", 
+                   command=self.optimizeAction,
+                   activebackground="blue", 
+                   activeforeground="white",
+                   anchor="center",
+                   bd=3,
+                   bg="lightgray",
+                   cursor="hand2",
+                   disabledforeground="gray",
+                   fg="black",
+                   font=("Arial", 12),
+                   height=2,
+                   highlightbackground="black",
+                   highlightcolor="green",
+                   highlightthickness=2,
+                   justify="center",
+                   overrelief="raised",
+                   padx=10,
+                   pady=5,
+                   width=15,
+                   wraplength=100)
+        button.pack(padx=20, pady=20)
+
         #here add matplot lib figure
 
     def optimizeAction(self):
-        __optimize_action(self.coordinates)
+        solution = self.__optimize_action(self.__coordinates)
+        self.__showResult(solution)
     
     def setOptimizeAction(self, action):
         self.__optimize_action = action
-
 
     def display(self):
         self.main_frame.mainloop()

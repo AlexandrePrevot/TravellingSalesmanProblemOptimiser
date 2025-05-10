@@ -6,16 +6,17 @@ service Optimization {
   rpc Optimize (OptimizationRequest) returns (OptimizationReply) {}
 }
 
-message OptimizationRequest {
-    message Coordinate {
-        // required field are not allowed in proto3
-        double coordX = 1;
-        double coordY = 2;
-    }
+message Coordinate {
+    // required field are not allowed in proto3
+    double coordX = 1;
+    double coordY = 2;
+}
 
+message OptimizationRequest {
     repeated Coordinate coordinates = 1;
 }
 
 message OptimizationReply {
     bool accepted = 1;
+    repeated Coordinate coordinates = 2;
 }

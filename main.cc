@@ -36,11 +36,37 @@
 class OptimizationServiceImpl final : public TSPO::Optimization::Service {
     grpc::Status Optimize(grpc::ServerContext* server_context, const TSPO::OptimizationRequest* optimization_request, TSPO::OptimizationReply* optimization_reply) {
         std::cout << "received message" << std::endl;
-        for (int i = 0; i < optimization_request->coordinates_size(); i++) {
-            const TSPO::OptimizationRequest::Coordinate& coordinate = optimization_request->coordinates(i);
+        
+        const std::size_t size = optimization_request->coordinates_size();
+        std::vector<Coordinate> map;
+        map.reserve(size);
+        
+        for (int i = 0; i < size; i++) {
+            const TSPO::Coordinate& coordinate = optimization_request->coordinates(i);
             std::cout << "coordX : " << coordinate.coordx() << " coordY : " << coordinate.coordy() << std::endl;
+            Coordinate coord;
+            coord.setX(coordinate.coordx());
+            coord.setY(coordinate.coordy());
+            map.push_back(coord);
         }
-        optimization_reply->set_accepted(true);
+
+        GeneticAlgorithm algorithm;
+        algorithm.setIndividualSize(map.size());
+        algorithm.setPopulationSize(100);
+        algorithm.setSelectionRate(0.1);
+        algorithm.setMap(map);
+
+        const bool success = algorithm.process();
+
+        std::vector<int> best = algorithm.best_individual().getCoordinateList();
+
+        for (int i = 0; i < size; i++) {
+            TSPO::Coordinate* reply_coord = optimization_reply->add_coordinates();
+            reply_coord->set_coordx(map[best[i]].getX());
+            reply_coord->set_coordy(map[best[i]].getY());
+        }
+
+        optimization_reply->set_accepted(success);
         return grpc::Status::OK;
     }
 };
@@ -56,7 +82,6 @@ void RunServer() {
   builder.RegisterService(&optimization_service);
 
   std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
-  std::cout << "Server listening on " << server_address << std::endl;
   server->Wait();
 }
 

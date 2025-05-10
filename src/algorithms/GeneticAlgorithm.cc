@@ -9,7 +9,7 @@
 #include "manager/MutationManager.hpp"
 #include "manager/IndividualManager.hpp"
 
-static constexpr int kMaxStagnationCount = 50;
+static constexpr int kMaxStagnationCount = 100;
 static constexpr int kMaxPopulationSize = 1000000;
 static constexpr int kMaxIndividualSize = 1000000;
 
@@ -43,7 +43,7 @@ void GeneticAlgorithm::setUpBestIndividual() {
 }
 
 void GeneticAlgorithm::setUpIndividualManager() {
-    m_individual_manager.setMutationRate(0.1);
+    m_individual_manager.setMutationRate(0.2);
     m_individual_manager.setMutationPolicy(IndividualManager::kSwap);
 }
 
@@ -111,7 +111,7 @@ bool GeneticAlgorithm::process() {
     int stagnation_count_guard = 0;
 
 
-    std::cout << "old population " << std::endl;
+    std::cout << "-------------------old population-------------------" << std::endl;
     std::cout << m_population << std::endl;
     int generation_count = 0;
     while (stagnation_count_guard <= kMaxStagnationCount) {
@@ -132,6 +132,9 @@ bool GeneticAlgorithm::process() {
         stagnation_count_guard++;
         generation_count++;
     }
+
+    std::cout << "-------------------new population-------------------" << std::endl;
+    std::cout << m_population << std::endl;
 
     std::cout << "needed " << generation_count << " generations" << std::endl;
     std::cout << "best individual : " << m_best_individual << std::endl;

@@ -20,20 +20,12 @@ def run(coordinate_list):
         msg_coord.coordX = coord[0]
         msg_coord.coordY = coord[1]
 
-    """
-    coord1 = optimization_req.coordinates.add()
-    coord2 = optimization_req.coordinates.add()
-    coord3 = optimization_req.coordinates.add()
-
-    coord1.coordX = 12
-    coord1.coordY = 11
-
-    coord2.coordX = -5
-    coord2.coordY = 2
-
-    coord3.coordX = 17
-    coord3.coordY = 6
-    """
-
     response = stub.Optimize(optimization_req)
+
+    solution = []
+    for coord in response.coordinates:
+        solution.append([coord.coordX, coord.coordY])
     print("Greeter client received: " + str(response.accepted))
+
+    return solution
+

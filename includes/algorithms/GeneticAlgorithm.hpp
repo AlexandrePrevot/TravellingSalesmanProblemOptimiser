@@ -27,6 +27,10 @@ public:
         m_individual_manager.setMap(map);
     }
 
+    Individual best_individual() {
+        return m_best_individual;
+    }
+
     bool process(); // returns wether the process is a success or not
 
 private:
