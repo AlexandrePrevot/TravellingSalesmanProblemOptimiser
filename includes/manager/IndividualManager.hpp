@@ -44,6 +44,7 @@ public:
     void swapCoords(size_t idx_1, size_t idx_2, Individual &individual) const;
 
 private:
+    void reverseMutation(Individual& individual) const;
     void randomSwapMutation(Individual& individual) const;
 
     double m_mutation_rate{0.};

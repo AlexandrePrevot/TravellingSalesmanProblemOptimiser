@@ -43,8 +43,8 @@ void GeneticAlgorithm::setUpBestIndividual() {
 }
 
 void GeneticAlgorithm::setUpIndividualManager() {
-    m_individual_manager.setMutationRate(0.2);
-    m_individual_manager.setMutationPolicy(IndividualManager::kSwap);
+    m_individual_manager.setMutationRate(0.3);
+    m_individual_manager.setMutationPolicy(IndividualManager::kReverse);
 }
 
 bool GeneticAlgorithm::cycle() {

@@ -27,6 +27,7 @@
     In individual manager : don't recalculate the distance entirely when swaping
     maj to every file
     in cross over ERO : take a random neighbour if they have same number of neihbours
+    in GeneticAlgorithm::cycle fix new individual generation (currently maybe not enough are created)
 
     use a specific formatted style
     make sure everything is const when needed (sometimes I had to do weird trickes, you'll see)

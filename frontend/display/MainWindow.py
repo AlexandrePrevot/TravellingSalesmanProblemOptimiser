@@ -15,11 +15,15 @@ class MainWindow:
         self.__coordinates.append([posX, posY])
         self.solution_canvas.create_rectangle(posX, posY, posX + point_size, posY + point_size, fill="black")
     
+    def __clearSolution(self):
+        self.solution_canvas.delete("line")
+
+    
     def __showResult(self, solution):
         size = len(solution)
         for i in range(size - 1):
-            self.solution_canvas.create_line(solution[i][0],solution[i][1], solution[i+1][0],solution[i+1][1], width=line_width)
-        self.solution_canvas.create_line(solution[size - 1][0],solution[size - 1][1], solution[0][0],solution[0][1], width=line_width)
+            self.solution_canvas.create_line(solution[i][0],solution[i][1], solution[i+1][0],solution[i+1][1], width=line_width, tag="line")
+        self.solution_canvas.create_line(solution[size - 1][0],solution[size - 1][1], solution[0][0],solution[0][1], width=line_width, tag="line")
 
     def __init__(self):
         self.__coordinates = []
@@ -58,7 +62,7 @@ class MainWindow:
         graph_canvas = tk.Canvas(graph_frame, width=graph_canvas_width, height=graph_canvas_height, bg="white", highlightthickness=0)
         graph_canvas.pack(pady=100)  # Centered vertically
 
-        button = tk.Button(self.main_frame, 
+        optimize_button = tk.Button(self.main_frame, 
                    text="Optimize", 
                    command=self.optimizeAction,
                    activebackground="blue", 
@@ -80,12 +84,13 @@ class MainWindow:
                    pady=5,
                    width=15,
                    wraplength=100)
-        button.pack(padx=20, pady=20)
+        optimize_button.pack(padx=20, pady=20)
 
         #here add matplot lib figure
 
     def optimizeAction(self):
         solution = self.__optimize_action(self.__coordinates)
+        self.__clearSolution()
         self.__showResult(solution)
     
     def setOptimizeAction(self, action):

@@ -25,7 +25,20 @@ def run(coordinate_list):
     solution = []
     for coord in response.coordinates:
         solution.append([coord.coordX, coord.coordY])
-    print("Greeter client received: " + str(response.accepted))
+    print("Greeter client received: " + str(solution))
 
     return solution
 
+"""
+not crossed
+[[44.0, 240.0], [92.0, 191.0], [134.0, 172.0], [181.0, 220.0], [175.0, 174.0], [160.0, 114.0], [133.0, 82.0], 
+[117.0, 109.0], [108.0, 109.0], [117.0, 148.0], [77.0, 171.0], [38.0, 138.0]]
+26480
+
+
+crossed but better solution ?
+[[181.0, 220.0], [175.0, 174.0], [160.0, 114.0], [133.0, 82.0], [117.0, 109.0], [108.0, 109.0], [117.0, 148.0], 
+[134.0, 172.0], [92.0, 191.0], [44.0, 240.0], [77.0, 171.0], [38.0, 138.0]]
+26553
+
+"""
