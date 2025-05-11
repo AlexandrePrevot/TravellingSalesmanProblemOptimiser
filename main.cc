@@ -1,8 +1,8 @@
 #include <iostream>
-#include <vector>
-
+#include <memory>
 #include <cstdlib>
 #include <ctime>
+#include <vector>
 
 #include <grpcpp/grpcpp.h>
 
@@ -33,6 +33,30 @@
     use a specific formatted style
     make sure everything is const when needed (sometimes I had to do weird trickes, you'll see)
 */
+
+class UpdateNotificationClient {
+public:
+    UpdateNotificationClient(const std::shared_ptr<grpc::Channel>& channel) : stub_(TSPO::Optimization::NewStub(channel)) {}
+
+    bool WriteSolution(std::vector<int>& coordinate_list, const std::vector<Coordinate>& map) {
+        const std::size_t size = map.size();
+
+        TSPO::UpdateNotification notification;
+        for (int i = 0; i < size; i++) {
+            TSPO::Coordinate* notif_coord = notification.add_coordinates();
+            notif_coord->set_coordx(map[coordinate_list[i]].getX());
+            notif_coord->set_coordy(map[coordinate_list[i]].getY());
+        }
+
+        grpc::ClientContext context;
+        google::protobuf::Empty response;
+        grpc::Status status = stub_->Update(&context, notification, &response);
+        return true;
+    }
+
+private:
+    std::shared_ptr<TSPO::Optimization::Stub> stub_;
+};
 
 
 class OptimizationServiceImpl final : public TSPO::Optimization::Service {
@@ -143,40 +167,10 @@ int main()
     std::cout << child << std::endl;
     */
 
+    UpdateNotificationClient client(grpc::CreateChannel("localhost:50052", grpc::InsecureChannelCredentials()));
+
+    std::srand(std::time(0));// wasn't initializing random before ?
+
     RunServer();
-
-    std::srand(std::time(0));
-
-    std::vector<Coordinate> map;
-#define Create(x,y) \
-{\
-    Coordinate coord;\
-    coord.setX(x);\
-    coord.setY(y); \
-    map.push_back(coord);\
-}
-
-    Create(-17, 35);
-    Create(-11, 1);
-    Create(23, 11);
-    Create(10, 5);
-    Create(3, 0);
-    Create(0, 0);
-    Create(21, 21);
-    Create(1, 34);
-    Create(3, 9);
-    Create(9, 13);
-
-#undef Create
-
-    GeneticAlgorithm algorithm;
-    algorithm.setIndividualSize(map.size());
-    algorithm.setPopulationSize(20);
-    algorithm.setSelectionRate(0.1);
-    algorithm.setMap(map);
-
-    const bool success = algorithm.process();
-
-    std::cout << "is it a success : " << success << std::endl;
 
 }

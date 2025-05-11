@@ -1,9 +1,12 @@
 syntax = "proto3";
 
+import "google/protobuf/empty.proto";
+
 package TSPO;
 
 service Optimization {
   rpc Optimize (OptimizationRequest) returns (OptimizationReply) {}
+  rpc Update (UpdateNotification) returns (google.protobuf.Empty) {}
 }
 
 message Coordinate {
@@ -21,4 +24,8 @@ message OptimizationRequest {
 message OptimizationReply {
     bool accepted = 1;
     repeated Coordinate coordinates = 2;
+}
+
+message UpdateNotification {
+    repeated Coordinate coordinates = 1;
 }

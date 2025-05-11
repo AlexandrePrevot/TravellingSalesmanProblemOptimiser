@@ -9,6 +9,9 @@ sys.path.insert(0, request_dir)
 import request_pb2
 import request_pb2_grpc
 
+#take a look at https://stackoverflow.com/questions/38387443/how-to-implement-a-async-grpc-python-server
+# for asynchronous request
+
 def run(coordinate_list, mutation_rate, individual_number):
     print("sending coordinates : " + str(coordinate_list))
     channel = grpc.insecure_channel('localhost:50051')
