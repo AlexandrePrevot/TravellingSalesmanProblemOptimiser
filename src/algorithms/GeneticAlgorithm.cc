@@ -9,7 +9,7 @@
 #include "manager/MutationManager.hpp"
 #include "manager/IndividualManager.hpp"
 
-static constexpr int kMaxStagnationCount = 100;
+static constexpr int kMaxStagnationCount = 200;
 static constexpr int kMaxPopulationSize = 1000000;
 static constexpr int kMaxIndividualSize = 1000000;
 
@@ -43,7 +43,7 @@ void GeneticAlgorithm::setUpBestIndividual() {
 }
 
 void GeneticAlgorithm::setUpIndividualManager() {
-    m_individual_manager.setMutationRate(0.3);
+    m_individual_manager.setMutationRate(0.2);
     m_individual_manager.setMutationPolicy(IndividualManager::kReverse);
 }
 

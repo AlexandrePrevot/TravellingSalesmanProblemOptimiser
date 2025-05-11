@@ -14,6 +14,8 @@ message Coordinate {
 
 message OptimizationRequest {
     repeated Coordinate coordinates = 1;
+    double mutationRate = 2;
+    int32 individualNumber = 3;
 }
 
 message OptimizationReply {

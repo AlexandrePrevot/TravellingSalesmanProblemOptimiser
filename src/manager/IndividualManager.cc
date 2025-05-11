@@ -17,7 +17,7 @@ bool IndividualManager::mutateIndividual(Individual& individual) const
     }
 
     if (m_mutation_policy == kReverse) {
-
+        reverseMutation(individual);
     }
 
     return true;

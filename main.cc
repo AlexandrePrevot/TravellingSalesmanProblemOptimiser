@@ -28,6 +28,7 @@
     maj to every file
     in cross over ERO : take a random neighbour if they have same number of neihbours
     in GeneticAlgorithm::cycle fix new individual generation (currently maybe not enough are created)
+    handle edge cases of submission : for example selection rate must select at least 1 individual
 
     use a specific formatted style
     make sure everything is const when needed (sometimes I had to do weird trickes, you'll see)
@@ -53,8 +54,8 @@ class OptimizationServiceImpl final : public TSPO::Optimization::Service {
 
         GeneticAlgorithm algorithm;
         algorithm.setIndividualSize(map.size());
-        algorithm.setPopulationSize(100);
-        algorithm.setSelectionRate(0.1);
+        algorithm.setPopulationSize(optimization_request->individualnumber());
+        algorithm.setSelectionRate(optimization_request->mutationrate());
         algorithm.setMap(map);
 
         const bool success = algorithm.process();
