@@ -48,9 +48,16 @@ public:
             notif_coord->set_coordy(map[coordinate_list[i]].getY());
         }
 
+        std::cout << "sending update message" << std::endl;
+
         grpc::ClientContext context;
         google::protobuf::Empty response;
         grpc::Status status = stub_->Update(&context, notification, &response);
+        if (status.ok()) {
+            std::cout << "message update done" << std::endl;
+        } else {
+            std::cout << "error in the message sending : " << status.error_message() << std::endl;
+        }
         return true;
     }
 
@@ -60,6 +67,7 @@ private:
 
 
 class OptimizationServiceImpl final : public TSPO::Optimization::Service {
+
     grpc::Status Optimize(grpc::ServerContext* server_context, const TSPO::OptimizationRequest* optimization_request, TSPO::OptimizationReply* optimization_reply) {
         std::cout << "received message" << std::endl;
         
@@ -82,6 +90,14 @@ class OptimizationServiceImpl final : public TSPO::Optimization::Service {
         algorithm.setSelectionRate(optimization_request->mutationrate());
         algorithm.setMap(map);
 
+        UpdateNotificationClient update_notification_client(grpc::CreateChannel("[::]:50052", grpc::InsecureChannelCredentials()));
+
+        auto progress_lambda = [&update_notification_client, &map] (std::vector<int>& coordinate_list) -> bool
+        {
+            return update_notification_client.WriteSolution(coordinate_list, map);
+        };
+        algorithm.setProgressCallback(progress_lambda);
+
         const bool success = algorithm.process();
 
         std::vector<int> best = algorithm.best_individual().getCoordinateList();
@@ -91,9 +107,6 @@ class OptimizationServiceImpl final : public TSPO::Optimization::Service {
             reply_coord->set_coordx(map[best[i]].getX());
             reply_coord->set_coordy(map[best[i]].getY());
         }
-
-        optimization_reply->set_accepted(success);
-        return grpc::Status::OK;
     }
 };
 
@@ -167,7 +180,7 @@ int main()
     std::cout << child << std::endl;
     */
 
-    UpdateNotificationClient client(grpc::CreateChannel("localhost:50052", grpc::InsecureChannelCredentials()));
+    //UpdateNotificationClient client(grpc::CreateChannel("localhost:50052", grpc::InsecureChannelCredentials()));
 
     std::srand(std::time(0));// wasn't initializing random before ?
 

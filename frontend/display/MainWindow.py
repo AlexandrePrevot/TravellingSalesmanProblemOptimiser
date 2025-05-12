@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 
 import random
+import threading
 
 window_min_size = 1000
 window_max_size = 2000
@@ -152,7 +153,11 @@ class MainWindow:
         #here add matplot lib figure
 
     def optimizeAction(self):
-        solution = self.__optimize_action(self.__coordinates, self.mutation_rate, self.individual_number)
+        self.__clearSolution()
+        threading.Thread(target = lambda : self.__optimize_action(self.__coordinates, self.mutation_rate, self.individual_number)).start()
+        #self.__showResult(solution)
+    
+    def updateAction(self, solution):
         self.__clearSolution()
         self.__showResult(solution)
     

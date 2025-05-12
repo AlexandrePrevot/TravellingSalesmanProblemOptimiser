@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 #include "manager/IndividualManager.hpp"
 
 #include "data/coordinate.hpp"
@@ -27,6 +29,10 @@ public:
         m_individual_manager.setMap(map);
     }
 
+    void setProgressCallback(const std::function<bool(std::vector<int>&)>& progress_callback) {
+        m_progress_callback = progress_callback;
+    }
+
     Individual best_individual() {
         return m_best_individual;
     }
@@ -48,4 +54,6 @@ private:
     void setUpIndividualManager();
 
     bool cycle();
+
+    std::function<bool(std::vector<int>&)> m_progress_callback;
 };
