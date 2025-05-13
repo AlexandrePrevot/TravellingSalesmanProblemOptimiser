@@ -29,7 +29,7 @@ public:
         m_individual_manager.setMap(map);
     }
 
-    void setProgressCallback(const std::function<bool(std::vector<int>&)>& progress_callback) {
+    void setProgressCallback(const std::function<bool(std::vector<int>&, double, int)>& progress_callback) {
         m_progress_callback = progress_callback;
     }
 
@@ -55,5 +55,5 @@ private:
 
     bool cycle();
 
-    std::function<bool(std::vector<int>&)> m_progress_callback;
+    std::function<bool(std::vector<int>&, double, int)> m_progress_callback;
 };

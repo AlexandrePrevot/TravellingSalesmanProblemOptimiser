@@ -1,6 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
 
+import matplotlib
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
+
 import random
 import threading
 
@@ -11,6 +15,8 @@ point_size = 5
 line_width = 1
 default_mutation_rate = 0.2
 default_individual_number = 200
+
+matplotlib.use("tkAgg") # make plotlib using tkinter
 
 class MainWindow:
     def __createAndAddPointWithEvent(self, event):
@@ -33,6 +39,8 @@ class MainWindow:
 
     def __showResult(self, solution):
         size = len(solution)
+        if size == 0:
+            return
         for i in range(size - 1):
             self.solution_canvas.create_line(solution[i][0],solution[i][1], solution[i+1][0],solution[i+1][1], width=line_width, tag="line")
         self.solution_canvas.create_line(solution[size - 1][0],solution[size - 1][1], solution[0][0],solution[0][1], width=line_width, tag="line")
@@ -69,6 +77,10 @@ class MainWindow:
 
     def __init__(self):
         self.__coordinates = []
+        self.scores = []
+        self.generation = []
+        self.worst_score = 0
+
         self.__optimize_action = None
         self.individual_number = default_individual_number
         self.mutation_rate = default_mutation_rate
@@ -150,14 +162,29 @@ class MainWindow:
         clear_button = tk.Button(self.main_frame, text="clear", command=self.__clear)
         clear_button.pack()
 
-        #here add matplot lib figure
+        # matplotlib
+        self.figure = Figure(figsize=(5,4), dpi=100) # dpi = dots per inch (resolution)
+        self.axis = self.figure.add_subplot(111)
+        self.line = self.axis.plot([],[], "r-")[0]
+        self.axis.set_ylim(0, 100)
+        self.plot_canvas = FigureCanvasTkAgg(self.figure, master = graph_canvas)
+        self.plot_canvas.get_tk_widget().pack(fill="both", expand=True)
 
     def optimizeAction(self):
         self.__clearSolution()
+        self.scores = []
+        self.generation = []
+        self.worst_score = 0
         threading.Thread(target = lambda : self.__optimize_action(self.__coordinates, self.mutation_rate, self.individual_number)).start()
-        #self.__showResult(solution)
     
-    def updateAction(self, solution):
+    def updateAction(self, solution, score, generation):
+        self.worst_score = max(score, self.worst_score)
+        self.scores.append(score)
+        self.generation.append(generation) # maybe should add individual generations here
+        self.line.set_data(self.generation, self.scores)
+        self.axis.set_xlim(0, generation)
+        self.axis.set_ylim(0, max(score, self.worst_score))
+        self.plot_canvas.draw()
         self.__clearSolution()
         self.__showResult(solution)
     

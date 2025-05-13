@@ -28,4 +28,6 @@ message OptimizationReply {
 
 message UpdateNotification {
     repeated Coordinate coordinates = 1;
+    double score = 2;
+    int32 generation = 3;
 }

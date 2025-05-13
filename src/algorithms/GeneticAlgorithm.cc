@@ -126,7 +126,7 @@ bool GeneticAlgorithm::process() {
             std::cout << "improvment in generation " << generation_count << std::endl;
             stagnation_count_guard = 0;
             generation_count++;
-            m_progress_callback(m_best_individual.getCoordinateList());
+            m_progress_callback(m_best_individual.getCoordinateList(), new_best, generation_count);
             continue;
         }
 

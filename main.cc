@@ -38,7 +38,7 @@ class UpdateNotificationClient {
 public:
     UpdateNotificationClient(const std::shared_ptr<grpc::Channel>& channel) : stub_(TSPO::Optimization::NewStub(channel)) {}
 
-    bool WriteSolution(std::vector<int>& coordinate_list, const std::vector<Coordinate>& map) {
+    bool WriteSolution(std::vector<int>& coordinate_list, const std::vector<Coordinate>& map, double distance, int generation) {
         const std::size_t size = map.size();
 
         TSPO::UpdateNotification notification;
@@ -47,6 +47,9 @@ public:
             notif_coord->set_coordx(map[coordinate_list[i]].getX());
             notif_coord->set_coordy(map[coordinate_list[i]].getY());
         }
+
+        notification.set_score(distance);
+        notification.set_generation(generation);
 
         std::cout << "sending update message" << std::endl;
 
@@ -92,9 +95,9 @@ class OptimizationServiceImpl final : public TSPO::Optimization::Service {
 
         UpdateNotificationClient update_notification_client(grpc::CreateChannel("[::]:50052", grpc::InsecureChannelCredentials()));
 
-        auto progress_lambda = [&update_notification_client, &map] (std::vector<int>& coordinate_list) -> bool
+        auto progress_lambda = [&update_notification_client, &map] (std::vector<int>& coordinate_list, double distance, int generation) -> bool
         {
-            return update_notification_client.WriteSolution(coordinate_list, map);
+            return update_notification_client.WriteSolution(coordinate_list, map, distance, generation);
         };
         algorithm.setProgressCallback(progress_lambda);
 
@@ -107,6 +110,8 @@ class OptimizationServiceImpl final : public TSPO::Optimization::Service {
             reply_coord->set_coordx(map[best[i]].getX());
             reply_coord->set_coordy(map[best[i]].getY());
         }
+
+        return grpc::Status::OK;
     }
 };
 
