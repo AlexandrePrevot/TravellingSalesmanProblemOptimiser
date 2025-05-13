@@ -10,8 +10,8 @@ import threading
 
 window_min_size = 1000
 window_max_size = 2000
-solution_window_ratio = 0.33
-point_size = 5
+solution_window_ratio = 0.8
+point_size = 1
 line_width = 1
 default_mutation_rate = 0.2
 default_individual_number = 200
@@ -74,6 +74,29 @@ class MainWindow:
             posY = random.randint(0, self.solution_canvas.winfo_reqheight())
 
             self.__createAndAddPoint(posX, posY)
+
+    def __generateStaticCoordinates(self):
+        self.__clear()
+        points = [
+            [400, 100], [410, 110], [420, 120], [430, 130], [440, 140], [450, 150], [460, 160],
+            [470, 170], [480, 180], [490, 190], [500, 200], [510, 210], [520, 220], [530, 230],
+            [540, 240], [550, 250], [560, 260], [570, 270], [580, 280], [590, 290], [600, 300],
+            [610, 310], [620, 320], [630, 330], [640, 340], [650, 350], [660, 360], [670, 370],
+            [680, 380], [690, 390], [700, 400], [690, 410], [680, 420], [670, 430], [660, 440],
+            [650, 450], [640, 460], [630, 470], [620, 480], [610, 490], [600, 500], [590, 510],
+            [580, 520], [570, 530], [560, 540], [550, 550], [540, 560], [530, 570], [520, 580],
+            [510, 590], [500, 600], [490, 610], [480, 620], [470, 630], [460, 640], [450, 650],
+            [440, 660], [430, 670], [420, 680], [410, 690], [400, 700], [390, 690], [380, 680],
+            [370, 670], [360, 660], [350, 650], [340, 640], [330, 630], [320, 620], [310, 610],
+            [300, 600], [290, 590], [280, 580], [270, 570], [260, 560], [250, 550], [240, 540],
+            [230, 530], [220, 520], [210, 510], [200, 500], [190, 490], [180, 480], [170, 470],
+            [160, 460], [150, 450], [140, 440], [130, 430], [120, 420], [110, 410], [100, 400],
+            [110, 390], [120, 380], [130, 370], [140, 360], [150, 350], [160, 340], [170, 330],
+            [180, 320], [190, 310], [200, 300]
+        ]
+
+        for i in range(len(points)):
+            self.__createAndAddPoint(points[i][0], points[i][1])
 
     def __init__(self):
         self.__coordinates = []
@@ -142,6 +165,30 @@ class MainWindow:
                    wraplength=100)
 
         optimize_button.pack(padx=20, pady=20)
+        contour_button = tk.Button(self.main_frame, 
+                   text="contour", 
+                   command=self.optimizeAction,
+                   activebackground="blue", 
+                   activeforeground="white",
+                   anchor="center",
+                   bd=3,
+                   bg="lightgray",
+                   cursor="hand2",
+                   disabledforeground="gray",
+                   fg="black",
+                   font=("Arial", 12),
+                   height=2,
+                   highlightbackground="black",
+                   highlightcolor="green",
+                   highlightthickness=2,
+                   justify="center",
+                   overrelief="raised",
+                   padx=10,
+                   pady=5,
+                   width=15,
+                   wraplength=100)
+
+        contour_button.pack(padx=20, pady=20)
 
         self.individual_entry = tk.Entry(self.main_frame)
         self.individual_entry.pack(pady=10)
@@ -158,6 +205,9 @@ class MainWindow:
         self.random_generation_entry.pack(pady=10)
         random_generation_button = tk.Button(self.main_frame, text="generate random coordinates", command=self.__generateRandomCoordinates)
         random_generation_button.pack()
+        contour_button = tk.Button(self.main_frame, text="generate contour of a drawing", command=self.__generateStaticCoordinates)
+        contour_button.pack()
+
 
         clear_button = tk.Button(self.main_frame, text="clear", command=self.__clear)
         clear_button.pack()
@@ -175,6 +225,9 @@ class MainWindow:
         self.scores = []
         self.generation = []
         self.worst_score = 0
+        self.line.set_data([], [])
+        self.axis.set_ylim(0, 10)
+        self.plot_canvas.draw()
         threading.Thread(target = lambda : self.__optimize_action(self.__coordinates, self.mutation_rate, self.individual_number)).start()
     
     def updateAction(self, solution, score, generation):
