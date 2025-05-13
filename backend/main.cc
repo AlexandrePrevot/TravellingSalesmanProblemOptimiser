@@ -18,8 +18,8 @@
 
 #include "algorithms/GeneticAlgorithm.hpp"
 
-#include "messages/generated/request.grpc.pb.h"
-#include "messages/generated/request.pb.h"
+#include "generated/request.grpc.pb.h"
+#include "generated/request.pb.h"
 
 /*
     TODO

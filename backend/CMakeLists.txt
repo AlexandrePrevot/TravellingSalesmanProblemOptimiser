@@ -35,7 +35,7 @@ set(grpc_list
     request.grpc.pb.cc
 )
 
-list(TRANSFORM grpc_list PREPEND "messages/generated/")
+list(TRANSFORM grpc_list PREPEND "generated/")
 
 add_library(lib_algo STATIC ${algorithm_list})
 target_include_directories(lib_algo PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/includes)
