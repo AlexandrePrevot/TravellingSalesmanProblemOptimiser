@@ -1,112 +1,105 @@
 #include "manager/IndividualManager.hpp"
 
 #include <algorithm>
-#include <cstdlib>
-#include <ctime>
+#include <utility>
+#include <vector>
 
+bool IndividualManager::MutateIndividual(Individual &individual) const {
+  const int random_value =
+      std::rand() % 100;  // should try to get a double value
+  if (random_value >= mutation_rate_ * 100) {
+    return false;
+  }
 
-bool IndividualManager::mutateIndividual(Individual& individual) const
-{
-    const int random_value = std::rand() % 100; // should try to get a double value
-    if (random_value >= m_mutation_rate*100) {
-        return false;
-    }
+  if (mutation_policy_ == kSwap) {
+    RandomSwapMutation(individual);
+  }
 
-    if (m_mutation_policy == kSwap) {
-        randomSwapMutation(individual);
-    }
+  if (mutation_policy_ == kReverse) {
+    ReverseMutation(individual);
+  }
 
-    if (m_mutation_policy == kReverse) {
-        reverseMutation(individual);
-    }
-
-    return true;
+  return true;
 }
 
-void IndividualManager::reverseMutation(Individual& individual) const
-{
-    std::vector<int> &coordinate_list = individual.getCoordinateList();
-    const std::size_t individual_size = coordinate_list.size();
+void IndividualManager::ReverseMutation(Individual &individual) const {
+  std::vector<int> &coordinate_list = individual.GetCoordinateList();
+  const std::size_t individual_size = coordinate_list.size();
 
-    const int random_idx_1 = std::rand() % individual_size;
-    const int random_idx_2 = std::rand() % individual_size;
+  const int random_idx_1 = std::rand() % individual_size;
+  const int random_idx_2 = std::rand() % individual_size;
 
-    if (random_idx_1 > random_idx_2) {
-        std::reverse(coordinate_list.begin() + random_idx_2, coordinate_list.begin() + random_idx_1);
-    } else {
-        std::reverse(coordinate_list.begin() + random_idx_1, coordinate_list.begin() + random_idx_2);
-    }
+  if (random_idx_1 > random_idx_2) {
+    std::reverse(coordinate_list.begin() + random_idx_2,
+                 coordinate_list.begin() + random_idx_1);
+  } else {
+    std::reverse(coordinate_list.begin() + random_idx_1,
+                 coordinate_list.begin() + random_idx_2);
+  }
 
-    resetDistance(individual);
+  ResetDistance(individual);
 }
 
-void IndividualManager::randomSwapMutation(Individual& individual) const
-{
-    std::vector<int> &coordinate_list = individual.getCoordinateList();
-    const std::size_t individual_size = coordinate_list.size();
+void IndividualManager::RandomSwapMutation(Individual &individual) const {
+  std::vector<int> &coordinate_list = individual.GetCoordinateList();
+  const std::size_t individual_size = coordinate_list.size();
 
-    const int random_idx_1 = std::rand() % individual_size;
-    const int random_idx_2 = std::rand() % individual_size;
+  const int random_idx_1 = std::rand() % individual_size;
+  const int random_idx_2 = std::rand() % individual_size;
 
-    swapCoords(random_idx_1, random_idx_2, individual);
+  SwapCoords(random_idx_1, random_idx_2, individual);
 }
 
-void IndividualManager::resetDistance(Individual &individual) const
-{
-    double res_distance{0.};
-    const std::vector<int> &coordinate_list = individual.getCoordinateList();
-    const std::size_t size = coordinate_list.size();
+void IndividualManager::ResetDistance(Individual &individual) const {
+  double res_distance{0.};
+  const std::vector<int> &coordinate_list = individual.GetCoordinateList();
+  const std::size_t size = coordinate_list.size();
 
-    if (size <= 1) {
-        individual.setTotalDistance(res_distance);
-    }
+  if (size <= 1) {
+    individual.SetTotalDistance(res_distance);
+  }
 
-
-    for (int i = 0; i < size - 1; i++) {
-        Coordinate coord = m_map[coordinate_list[i]];
-        Coordinate next_coord = m_map[coordinate_list[i+1]];
-        const double x_dist{coord.getX() - next_coord.getX()};
-        const double y_dist{coord.getY() - next_coord.getY()};
-
-        res_distance += x_dist * x_dist + y_dist * y_dist;
-    }
-
-    Coordinate start_coord = m_map[coordinate_list[0]];
-    Coordinate end_coord = m_map[coordinate_list[size-1]];
-
-    const double x_dist{end_coord.getX() - start_coord.getX()};
-    const double y_dist{end_coord.getY() - start_coord.getY()};
+  for (int i = 0; i < size - 1; i++) {
+    Coordinate coord = map_[coordinate_list[i]];
+    Coordinate next_coord = map_[coordinate_list[i + 1]];
+    const double x_dist{coord.GetX() - next_coord.GetX()};
+    const double y_dist{coord.GetY() - next_coord.GetY()};
 
     res_distance += x_dist * x_dist + y_dist * y_dist;
+  }
 
-    individual.setTotalDistance(res_distance);
+  Coordinate start_coord = map_[coordinate_list[0]];
+  Coordinate end_coord = map_[coordinate_list[size - 1]];
+
+  const double x_dist{end_coord.GetX() - start_coord.GetX()};
+  const double y_dist{end_coord.GetY() - start_coord.GetY()};
+
+  res_distance += x_dist * x_dist + y_dist * y_dist;
+
+  individual.SetTotalDistance(res_distance);
 }
 
-void IndividualManager::swapCoords(size_t idx_1, size_t idx_2, Individual &individual) const
-{
-    std::vector<int> &coordinate_list{individual.getCoordinateList()};
-    const size_t size = coordinate_list.size();
+void IndividualManager::SwapCoords(size_t idx_1, size_t idx_2,
+                                   Individual &individual) const {
+  std::vector<int> &coordinate_list{individual.GetCoordinateList()};
+  const size_t size = coordinate_list.size();
 
-    if (idx_1 < 0)
-    {
-        return;
-    }
+  if (idx_1 < 0) {
+    return;
+  }
 
-    if (idx_1 >= size)
-    {
-        return;
-    }
+  if (idx_1 >= size) {
+    return;
+  }
 
-    if (idx_2 < 0)
-    {
-        return;
-    }
+  if (idx_2 < 0) {
+    return;
+  }
 
-    if (idx_2 >= size)
-    {
-        return;
-    }
+  if (idx_2 >= size) {
+    return;
+  }
 
-    std::swap(coordinate_list.at(idx_1), coordinate_list.at(idx_2));
-    resetDistance(individual);
+  std::swap(coordinate_list.at(idx_1), coordinate_list.at(idx_2));
+  ResetDistance(individual);
 }

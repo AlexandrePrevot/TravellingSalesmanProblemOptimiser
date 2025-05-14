@@ -1,29 +1,16 @@
 #pragma once
 
-struct Coordinate
-{
-public:
-    double getX() const
-    {
-        return m_x;
-    }
+struct Coordinate {
+ public:
+  double GetX() const { return x_; }
 
-    double getY() const
-    {
-        return m_y;
-    }
+  double GetY() const { return y_; }
 
-    void setX(double coord_x)
-    {
-        m_x = coord_x;
-    }
+  void SetX(double coord_x) { x_ = coord_x; }
 
-    void setY(double coord_y)
-    {
-        m_y = coord_y;
-    }
+  void SetY(double coord_y) { y_ = coord_y; }
 
-private:
-    double m_x{0.};
-    double m_y{0.};
+ private:
+  double x_{0.};
+  double y_{0.};
 };

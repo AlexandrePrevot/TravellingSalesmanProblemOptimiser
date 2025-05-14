@@ -1,59 +1,57 @@
 #pragma once
 
 #include <functional>
-
-#include "manager/IndividualManager.hpp"
+#include <vector>
 
 #include "data/coordinate.hpp"
 #include "data/individual.hpp"
 #include "data/population.hpp"
-#include "data/coordinate.hpp"
+#include "manager/IndividualManager.hpp"
 
 class GeneticAlgorithm {
-public:
-    GeneticAlgorithm();
+ public:
+  GeneticAlgorithm();
 
-    void setIndividualSize(const std::size_t individual_size) {
-        m_individual_size = individual_size;
-    }
+  void SetIndividualSize(const std::size_t individual_size) {
+    individual_size_ = individual_size;
+  }
 
-    void setPopulationSize(const std::size_t population_size) {
-        m_population_size = population_size;
-    }
+  void SetPopulationSize(const std::size_t population_size) {
+    population_size_ = population_size;
+  }
 
-    void setSelectionRate(const double selection_rate) {
-        m_selection_rate = selection_rate;
-    }
+  void SetSelectionRate(const double selection_rate) {
+    selection_rate_ = selection_rate;
+  }
 
-    void setMap(const std::vector<Coordinate>& map) {
-        m_individual_manager.setMap(map);
-    }
+  void SetMap(const std::vector<Coordinate>& map) {
+    individual_manager_.SetMap(map);
+  }
 
-    void setProgressCallback(const std::function<bool(std::vector<int>&, double, int)>& progress_callback) {
-        m_progress_callback = progress_callback;
-    }
+  void SetProgressCallback(const std::function<bool(std::vector<int>&, double,
+                                                    int)>& progress_callback) {
+    progress_callback_ = progress_callback;
+  }
 
-    Individual best_individual() {
-        return m_best_individual;
-    }
+  Individual BestIndividual() { return best_individual_; }
 
-    bool process(); // returns wether the process is a success or not
+  bool Process();  // returns wether the process is a success or not
 
-private:
-    Population m_population;
-    Individual m_best_individual;
+ private:
+  Population population_;
+  Individual best_individual_;
 
-    IndividualManager m_individual_manager;
+  IndividualManager individual_manager_;
 
-    std::size_t m_population_size;
-    std::size_t m_individual_size;
-    double m_selection_rate;
+  std::size_t population_size_;
+  std::size_t individual_size_;
+  double selection_rate_;
 
-    void setUpPopulation();
-    void setUpBestIndividual();
-    void setUpIndividualManager();
+  void SetUpPopulation();
+  void SetUpBestIndividual();
+  void SetUpIndividualManager();
 
-    bool cycle();
+  bool Cycle();
 
-    std::function<bool(std::vector<int>&, double, int)> m_progress_callback;
+  std::function<bool(std::vector<int>&, double, int)> progress_callback_;
 };

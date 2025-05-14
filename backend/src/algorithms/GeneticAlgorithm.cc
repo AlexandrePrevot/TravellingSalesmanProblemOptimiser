@@ -1,137 +1,136 @@
 #include "algorithms/GeneticAlgorithm.hpp"
 
 #include <algorithm>
+#include <iostream>
 
 #include "algorithms/PopulationGenerator.hpp"
 #include "algorithms/cross_over_operator.hpp"
-#include "algorithms/selector.hpp"
 #include "manager/IndividualManager.hpp"
-#include "manager/MutationManager.hpp"
 
 static constexpr int kMaxStagnationCount = 200;
 static constexpr int kMaxPopulationSize = 1000000;
 static constexpr int kMaxIndividualSize = 1000000;
 
 GeneticAlgorithm::GeneticAlgorithm()
-    : m_population_size(0), m_individual_size(0), m_selection_rate(-1.) {}
+    : population_size_(0), individual_size_(0), selection_rate_(-1.) {}
 
-static void sortPopulation(Population& unsorted_population) {
-  auto& population = unsorted_population.getPopulation();
+static void SortPopulation(Population& unsorted_population) {
+  auto& population = unsorted_population.GetPopulation();
   std::sort(population.begin(), population.end(),
             [](const Individual& left, const Individual& right) {
-              return left.getTotalDistance() < right.getTotalDistance();
+              return left.GetTotalDistance() < right.GetTotalDistance();
             });
 }
 
-void GeneticAlgorithm::setUpPopulation() {
-  m_population = PopulationGenerator::generateNewPopulation(m_population_size,
-                                                            m_individual_size);
-  auto& population = m_population.getPopulation();
+void GeneticAlgorithm::SetUpPopulation() {
+  population_ = PopulationGenerator::generateNewPopulation(population_size_,
+                                                            individual_size_);
+  auto& population = population_.GetPopulation();
 
   for (Individual& individual : population) {
-    m_individual_manager.resetDistance(individual);
+    individual_manager_.ResetDistance(individual);
   }
 
-  sortPopulation(m_population);
+  SortPopulation(population_);
 }
 
-void GeneticAlgorithm::setUpBestIndividual() {
-  m_best_individual = m_population.getPopulation()[0];
+void GeneticAlgorithm::SetUpBestIndividual() {
+  best_individual_ = population_.GetPopulation()[0];
 
-  for (auto individual : m_population.getPopulation()) {
-    if (individual.getTotalDistance() < m_best_individual.getTotalDistance()) {
-      m_best_individual = individual;
+  for (const auto& individual : population_.GetPopulation()) {
+    if (individual.GetTotalDistance() < best_individual_.GetTotalDistance()) {
+      best_individual_ = individual;
     }
   }
 }
 
-void GeneticAlgorithm::setUpIndividualManager() {
-  m_individual_manager.setMutationRate(0.2);
-  m_individual_manager.setMutationPolicy(IndividualManager::kReverse);
+void GeneticAlgorithm::SetUpIndividualManager() {
+  individual_manager_.SetMutationRate(0.2);
+  individual_manager_.SetMutationPolicy(IndividualManager::kReverse);
 }
 
-bool GeneticAlgorithm::cycle() {
-  const std::size_t to_keep = m_population_size * m_selection_rate;
+bool GeneticAlgorithm::Cycle() {
+  const std::size_t to_keep = population_size_ * selection_rate_;
 
   int individual_created = 0;
 
   for (int i = 0; i < to_keep; i++) {
     for (int j = 1; j < to_keep; j++) {
-      if (individual_created + to_keep >= m_population_size) {
+      if (individual_created + to_keep >= population_size_) {
         break;
       }
 
       auto& individual_to_eliminate =
-          m_population.getPopulation()[individual_created + to_keep];
+          population_.GetPopulation()[individual_created + to_keep];
       individual_to_eliminate = cross_over::crossOver(
-          m_population.getPopulation()[i], m_population.getPopulation()[j]);
-      m_individual_manager.mutateIndividual(individual_to_eliminate);
-      m_individual_manager.resetDistance(individual_to_eliminate);
+          population_.GetPopulation()[i], population_.GetPopulation()[j]);
+      individual_manager_.MutateIndividual(individual_to_eliminate);
+      individual_manager_.ResetDistance(individual_to_eliminate);
       individual_created++;
     }
 
-    if (individual_created + to_keep >= m_population_size) {
+    if (individual_created + to_keep >= population_size_) {
       break;
     }
   }
 
-  sortPopulation(m_population);
-  m_best_individual = m_population.getPopulation()[0];
+  SortPopulation(population_);
+  best_individual_ = population_.GetPopulation()[0];
   return true;
 }
 
-bool GeneticAlgorithm::process() {
-  if (m_individual_size <= 0) {
+bool GeneticAlgorithm::Process() {
+  if (individual_size_ <= 0) {
     return false;
   }
 
-  if (m_population_size <= 0) {
+  if (population_size_ <= 0) {
     return false;
   }
 
-  if (m_individual_size >= kMaxIndividualSize) {
+  if (individual_size_ >= kMaxIndividualSize) {
     return false;
   }
 
-  if (m_population_size >= kMaxPopulationSize) {
+  if (population_size_ >= kMaxPopulationSize) {
     return false;
   }
 
-  if (m_selection_rate <= 0) {
+  if (selection_rate_ <= 0) {
     return false;
   }
 
-  if (m_selection_rate >= 1) {
+  if (selection_rate_ >= 1) {
     return false;
   }
 
-  if (m_individual_manager.getMap().size() != m_individual_size) {
+  if (individual_manager_.GetMap().size() != individual_size_) {
     return false;
   }
 
-  setUpPopulation();
-  setUpBestIndividual();
-  setUpIndividualManager();
+  SetUpPopulation();
+  SetUpBestIndividual();
+  SetUpIndividualManager();
 
   int stagnation_count_guard = 0;
 
   std::cout << "-------------------old population-------------------"
             << std::endl;
-  std::cout << m_population << std::endl;
+  std::cout << population_ << std::endl;
   int generation_count = 0;
   while (stagnation_count_guard <= kMaxStagnationCount) {
-    const double current_best = m_best_individual.getTotalDistance();
-    cycle();
-    const double new_best = m_best_individual.getTotalDistance();
+    const double current_best = best_individual_.GetTotalDistance();
+    Cycle();
+    const double new_best = best_individual_.GetTotalDistance();
 
     // std::cout << "generation " << generation_count + 1 << std::endl;
-    // std::cout << m_population << std::endl;
+    // std::cout << population_ << std::endl;
 
     if (new_best < current_best) {
       std::cout << "improvment in generation " << generation_count << std::endl;
       stagnation_count_guard = 0;
       generation_count++;
-      m_progress_callback(m_best_individual.getCoordinateList(), new_best,
+      progress_callback_(best_individual_.GetCoordinateList(), new_best,
                           generation_count);
       continue;
     }
@@ -142,10 +141,10 @@ bool GeneticAlgorithm::process() {
 
   std::cout << "-------------------new population-------------------"
             << std::endl;
-  std::cout << m_population << std::endl;
+  std::cout << population_ << std::endl;
 
   std::cout << "needed " << generation_count << " generations" << std::endl;
-  std::cout << "best individual : " << m_best_individual << std::endl;
+  std::cout << "best individual : " << best_individual_ << std::endl;
 
   return true;
 }

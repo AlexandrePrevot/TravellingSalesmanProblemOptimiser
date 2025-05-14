@@ -25,7 +25,6 @@ list(TRANSFORM data_list PREPEND "src/data/")
 
 set(manager_list
     IndividualManager.cc
-    MutationManager.cc
 )
 
 list(TRANSFORM manager_list PREPEND "src/manager/")
