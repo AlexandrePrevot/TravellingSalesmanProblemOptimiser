@@ -18,6 +18,18 @@ default_individual_number = 200
 
 matplotlib.use("tkAgg") # make plotlib using tkinter
 
+
+"""
+    use private attributes when ever possible
+    use python google style guide
+    make a binder to bind the communicator and the FE (delete the function pointer logic)
+    
+    create a file for solution canva and graph canva
+    make a class for the communicator
+
+    /!\ review each function for special case /!\
+"""
+
 class MainWindow:
     def __createAndAddPointWithEvent(self, event):
         posX = event.x
