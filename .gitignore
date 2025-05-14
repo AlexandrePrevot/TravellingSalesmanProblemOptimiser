@@ -1,3 +1,4 @@
 /backend/generated/**
 /frontend/generated/**
 compile_commands.json
+.cache
