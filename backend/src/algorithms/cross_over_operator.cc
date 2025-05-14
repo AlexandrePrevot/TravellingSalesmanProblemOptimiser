@@ -126,7 +126,7 @@ static int getNextNode(
 // see
 // https://stackoverflow.com/questions/44376721/proper-edge-recombination-crossover-for-dna-assembly
 // for opimization
-Individual cross_over::crossOver(Individual& parent1, Individual& parent2) {
+Individual cross_over::CrossOver(Individual& parent1, Individual& parent2) {
   Individual child;
 
   auto& child_coordinate_list = child.GetCoordinateList();

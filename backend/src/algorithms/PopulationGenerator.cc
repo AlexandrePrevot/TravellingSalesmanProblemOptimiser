@@ -1,16 +1,14 @@
 #include "algorithms/PopulationGenerator.hpp"
 
 #include <algorithm>
-#include <cstdlib>
-#include <ctime>
 #include <random>
+#include <vector>
 
-#include "data/coordinate.hpp"
 #include "data/individual.hpp"
 
-static auto rng = std::default_random_engine{std::random_device{}()};
+static auto rng = std::default_random_engine {std::random_device {}()};
 
-void PopulationGenerator::resetIndividual(Individual& individual,
+void population_generator::ResetIndividual(Individual& individual,
                                           const double individual_size) {
   std::vector<int>& coordinate_list = individual.GetCoordinateList();
   coordinate_list.resize(individual_size);
@@ -20,15 +18,15 @@ void PopulationGenerator::resetIndividual(Individual& individual,
   }
 }
 
-void PopulationGenerator::initializeIndividual(Individual& individual,
+void population_generator::InitializeIndividual(Individual& individual,
                                                const double individual_size) {
   auto& coordinate_list = individual.GetCoordinateList();
-  resetIndividual(individual, individual_size);
+  ResetIndividual(individual, individual_size);
   std::shuffle(std::begin(coordinate_list), std::end(coordinate_list), rng);
 }
 
 // problems : always generating same population
-Population PopulationGenerator::generateNewPopulation(
+Population population_generator::GenerateNewPopulation(
     const int population_size, const double individual_size) {
   Population new_population;
 
@@ -36,7 +34,7 @@ Population PopulationGenerator::generateNewPopulation(
   individual_list.resize(population_size);
 
   for (int i = 0; i < population_size; i++) {
-    initializeIndividual(individual_list[i], individual_size);
+    InitializeIndividual(individual_list[i], individual_size);
   }
 
   return new_population;

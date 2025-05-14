@@ -2,10 +2,10 @@
 
 #include "data/population.hpp"
 
-namespace PopulationGenerator {
-void resetIndividual(Individual& individual, const double individual_size);
-void initializeIndividual(Individual& individual, const double individual_size);
+namespace population_generator {
+void ResetIndividual(Individual& individual, double individual_size);
+void InitializeIndividual(Individual& individual, double individual_size);
 
-Population generateNewPopulation(const int population_size,
-                                 const double individual_size);
-}  // namespace PopulationGenerator
+Population GenerateNewPopulation(int population_size,
+                                 double individual_size);
+}  // namespace population_generator

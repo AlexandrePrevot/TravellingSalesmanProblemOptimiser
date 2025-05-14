@@ -23,7 +23,7 @@ static void SortPopulation(Population& unsorted_population) {
 }
 
 void GeneticAlgorithm::SetUpPopulation() {
-  population_ = PopulationGenerator::generateNewPopulation(population_size_,
+  population_ = population_generator::GenerateNewPopulation(population_size_,
                                                             individual_size_);
   auto& population = population_.GetPopulation();
 
@@ -62,7 +62,7 @@ bool GeneticAlgorithm::Cycle() {
 
       auto& individual_to_eliminate =
           population_.GetPopulation()[individual_created + to_keep];
-      individual_to_eliminate = cross_over::crossOver(
+      individual_to_eliminate = cross_over::CrossOver(
           population_.GetPopulation()[i], population_.GetPopulation()[j]);
       individual_manager_.MutateIndividual(individual_to_eliminate);
       individual_manager_.ResetDistance(individual_to_eliminate);

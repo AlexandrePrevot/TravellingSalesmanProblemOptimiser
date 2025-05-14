@@ -10,7 +10,6 @@ find_package(gRPC REQUIRED)
 set(algorithm_list
     cross_over_operator.cc
     PopulationGenerator.cc
-    selector.cc
     GeneticAlgorithm.cc
 )
 

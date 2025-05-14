@@ -33,7 +33,8 @@
 
 class UpdateNotificationClient {
  public:
-  explicit UpdateNotificationClient(const std::shared_ptr<grpc::Channel>& channel)
+  explicit UpdateNotificationClient(
+      const std::shared_ptr<grpc::Channel>& channel)
       : stub_(TSPO::Optimization::NewStub(channel)) {}
 
   bool WriteSolution(std::vector<int>& coordinate_list,
@@ -133,6 +134,4 @@ void RunServer() {
   server->Wait();
 }
 
-int main() {
-  RunServer();
-}
+int main() { RunServer(); }
