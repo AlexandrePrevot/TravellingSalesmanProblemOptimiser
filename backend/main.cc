@@ -8,9 +8,6 @@
 #include <vector>
 
 #include "algorithms/GeneticAlgorithm.hpp"
-#include "algorithms/cross_over_operator.hpp"
-#include "data/coordinate.hpp"
-#include "data/individual.hpp"
 #include "generated/request.grpc.pb.h"
 #include "generated/request.pb.h"
 
@@ -18,6 +15,10 @@
   TODO
     make sure everything is const when needed (sometimes I had to do weird
    trickes, you'll see)
+
+   rename files
+
+   do the readme
 
    delete std::cout
 */

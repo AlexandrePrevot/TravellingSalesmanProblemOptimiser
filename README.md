@@ -1,1 +1,3 @@
-will be updated soon enough
+# Travelling salesman optimize through Genetic Algorithm
+
+Proposed a solution
