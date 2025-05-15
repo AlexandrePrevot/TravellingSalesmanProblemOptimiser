@@ -11,7 +11,7 @@ import threading
 window_min_size = 1000
 window_max_size = 2000
 solution_window_ratio = 0.8
-point_size = 1
+point_size = 5
 line_width = 1
 default_mutation_rate = 0.2
 default_individual_number = 200

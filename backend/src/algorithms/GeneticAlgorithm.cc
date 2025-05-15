@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <memory>
 
 #include "algorithms/PopulationGenerator.hpp"
 #include "algorithms/cross_over_operator.hpp"
@@ -17,8 +18,9 @@ GeneticAlgorithm::GeneticAlgorithm()
 static void SortPopulation(Population& unsorted_population) {
   auto& population = unsorted_population.GetPopulation();
   std::sort(population.begin(), population.end(),
-            [](const Individual& left, const Individual& right) {
-              return left.GetTotalDistance() < right.GetTotalDistance();
+            [](const std::shared_ptr<Individual>& left,
+               const std::shared_ptr<Individual>& right) {
+              return left->GetTotalDistance() < right->GetTotalDistance();
             });
 }
 
@@ -27,19 +29,19 @@ void GeneticAlgorithm::SetUpPopulation() {
                                                             individual_size_);
   auto& population = population_.GetPopulation();
 
-  for (Individual& individual : population) {
-    individual_manager_.ResetDistance(individual);
+  for (std::shared_ptr<Individual>& individual : population) {
+    individual_manager_.ResetDistance(*individual);
   }
 
   SortPopulation(population_);
 }
 
 void GeneticAlgorithm::SetUpBestIndividual() {
-  best_individual_ = population_.GetPopulation()[0];
+  best_individual_ = *population_.GetPopulation()[0];
 
   for (const auto& individual : population_.GetPopulation()) {
-    if (individual.GetTotalDistance() < best_individual_.GetTotalDistance()) {
-      best_individual_ = individual;
+    if (individual->GetTotalDistance() < best_individual_.GetTotalDistance()) {
+      best_individual_ = *individual;
     }
   }
 }
@@ -50,36 +52,45 @@ void GeneticAlgorithm::SetUpIndividualManager() {
 }
 
 bool GeneticAlgorithm::Cycle() {
-  const std::size_t to_keep = population_size_ * selection_rate_;
+  const std::size_t to_keep =
+      std::max(static_cast<int>(population_size_ * selection_rate_), 2);
 
   int individual_created = 0;
 
-  for (int i = 0; i < to_keep; i++) {
-    for (int j = 1; j < to_keep; j++) {
+  while (individual_created + to_keep < population_size_) {
+    for (int i = 0; i < to_keep; i++) {
+      for (int j = 1; j < to_keep; j++) {
+        if (individual_created + to_keep >= population_size_) {
+          break;
+        }
+
+        auto& individual_to_eliminate =
+            population_.GetPopulation()[individual_created + to_keep];
+        individual_to_eliminate = std::make_shared<Individual>(
+            cross_over::CrossOver(*population_.GetPopulation()[i],
+                                  *population_.GetPopulation()[j]));
+        individual_manager_.MutateIndividual(*individual_to_eliminate);
+        individual_manager_.ResetDistance(*individual_to_eliminate);
+        individual_created++;
+      }
+
       if (individual_created + to_keep >= population_size_) {
         break;
       }
-
-      auto& individual_to_eliminate =
-          population_.GetPopulation()[individual_created + to_keep];
-      individual_to_eliminate = cross_over::CrossOver(
-          population_.GetPopulation()[i], population_.GetPopulation()[j]);
-      individual_manager_.MutateIndividual(individual_to_eliminate);
-      individual_manager_.ResetDistance(individual_to_eliminate);
-      individual_created++;
-    }
-
-    if (individual_created + to_keep >= population_size_) {
-      break;
     }
   }
 
   SortPopulation(population_);
-  best_individual_ = population_.GetPopulation()[0];
+
+  if (population_.GetPopulation()[0]->GetTotalDistance() <
+      best_individual_.GetTotalDistance()) {
+    best_individual_ = *population_.GetPopulation()[0];
+  }
   return true;
 }
 
 bool GeneticAlgorithm::Process() {
+  std::cout << "processing" << std::endl;
   if (individual_size_ <= 0) {
     return false;
   }
@@ -108,6 +119,8 @@ bool GeneticAlgorithm::Process() {
     return false;
   }
 
+  std::cout << "setting up" << std::endl;
+
   SetUpPopulation();
   SetUpBestIndividual();
   SetUpIndividualManager();
@@ -131,7 +144,7 @@ bool GeneticAlgorithm::Process() {
       stagnation_count_guard = 0;
       generation_count++;
       progress_callback_(best_individual_.GetCoordinateList(), new_best,
-                          generation_count);
+                         generation_count);
       continue;
     }
 

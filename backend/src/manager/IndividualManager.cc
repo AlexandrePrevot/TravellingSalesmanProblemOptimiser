@@ -4,6 +4,13 @@
 #include <utility>
 #include <vector>
 
+static inline double GetDistance(double x1, double x2, double y1, double y2) {
+  const double x_dist{x1 - x2};
+  const double y_dist{y1 - y2};
+
+  return x_dist * x_dist + y_dist * y_dist;
+}
+
 bool IndividualManager::MutateIndividual(Individual &individual) const {
   const int random_value =
       std::rand() % 100;  // should try to get a double value
@@ -22,25 +29,22 @@ bool IndividualManager::MutateIndividual(Individual &individual) const {
   return true;
 }
 
-void IndividualManager::ReverseMutation(Individual &individual) const {
+void IndividualManager::ReverseMutation(Individual &individual) {
   std::vector<int> &coordinate_list = individual.GetCoordinateList();
   const std::size_t individual_size = coordinate_list.size();
 
-  const int random_idx_1 = std::rand() % individual_size;
-  const int random_idx_2 = std::rand() % individual_size;
+  int random_idx_1 = std::rand() % individual_size;
+  int random_idx_2 = std::rand() % individual_size;
 
   if (random_idx_1 > random_idx_2) {
-    std::reverse(coordinate_list.begin() + random_idx_2,
-                 coordinate_list.begin() + random_idx_1);
-  } else {
-    std::reverse(coordinate_list.begin() + random_idx_1,
-                 coordinate_list.begin() + random_idx_2);
+    std::swap(random_idx_1, random_idx_2);
   }
 
-  ResetDistance(individual);
+  std::reverse(coordinate_list.begin() + random_idx_1,
+               coordinate_list.begin() + random_idx_2);
 }
 
-void IndividualManager::RandomSwapMutation(Individual &individual) const {
+void IndividualManager::RandomSwapMutation(Individual &individual) {
   std::vector<int> &coordinate_list = individual.GetCoordinateList();
   const std::size_t individual_size = coordinate_list.size();
 
@@ -80,7 +84,7 @@ void IndividualManager::ResetDistance(Individual &individual) const {
 }
 
 void IndividualManager::SwapCoords(size_t idx_1, size_t idx_2,
-                                   Individual &individual) const {
+                                   Individual &individual) {
   std::vector<int> &coordinate_list{individual.GetCoordinateList()};
   const size_t size = coordinate_list.size();
 
@@ -101,5 +105,4 @@ void IndividualManager::SwapCoords(size_t idx_1, size_t idx_2,
   }
 
   std::swap(coordinate_list.at(idx_1), coordinate_list.at(idx_2));
-  ResetDistance(individual);
 }

@@ -31,11 +31,11 @@ class IndividualManager {
   bool MutateIndividual(Individual& individual) const;
 
   void ResetDistance(Individual& individual) const;
-  void SwapCoords(size_t idx_1, size_t idx_2, Individual& individual) const;
+  static void SwapCoords(size_t idx_1, size_t idx_2, Individual& individual);
 
  private:
-  void ReverseMutation(Individual& individual) const;
-  void RandomSwapMutation(Individual& individual) const;
+  static void ReverseMutation(Individual& individual);
+  static void RandomSwapMutation(Individual& individual);
 
   double mutation_rate_{0.};
   MutationPolicy mutation_policy_{kUndefined};

@@ -1,33 +1,30 @@
 #include "algorithms/cross_over_operator.hpp"
 
+#include <climits>
 #include <unordered_map>
 #include <unordered_set>
+#include <vector>
 
 #include "data/individual.hpp"
 
-static inline void addToAdjacencyMatrix(
+static inline void AddToAdjacencyMatrix(
     std::unordered_map<int, std::unordered_set<int>>& adjacency_matrix,
     const std::vector<int>& coord_list) {
   const std::size_t length = coord_list.size();
   for (int i = 0; i < length; i++) {
-    const int current_node1 = coord_list[i];
+    const int current_node = coord_list[i];
 
-    // /!\ /!\ WARNING
-    // to fix, if end of list, next node is start of list
-    const int next_node1 = (i + 1 < length) ? coord_list[i + 1] : -1;
-    const int previous_node1 = (i != 0) ? coord_list[i - 1] : -1;
+    const int next_node = (i + 1 < length) ? coord_list[i + 1] : coord_list[0];
+    const int previous_node =
+        (i != 0) ? coord_list[i - 1] : coord_list[length - 1];
 
-    if (next_node1 != -1) {
-      adjacency_matrix[current_node1].insert(next_node1);
-    }
+    adjacency_matrix[current_node].insert(next_node);
 
-    if (previous_node1 != -1) {
-      adjacency_matrix[current_node1].insert(previous_node1);
-    }
+    adjacency_matrix[current_node].insert(previous_node);
   }
 }
 
-static inline void removeFromNeighboursList(
+static inline void RemoveFromNeighboursList(
     std::unordered_map<int, std::unordered_set<int>>& adjacency_matrix,
     int to_remove) {
   auto neighbour_list = adjacency_matrix[to_remove];
@@ -43,20 +40,20 @@ static inline void removeFromNeighboursList(
   }
 }
 
-static std::unordered_map<int, std::unordered_set<int>> buildAdjacencyMatrix(
+static std::unordered_map<int, std::unordered_set<int>> BuildAdjacencyMatrix(
     const std::vector<int>& coord_list1, const std::vector<int>& coord_list2) {
   const std::size_t length = coord_list1.size();
   std::unordered_map<int, std::unordered_set<int>> adjacency_matrix;
 
   adjacency_matrix.reserve(length);
 
-  addToAdjacencyMatrix(adjacency_matrix, coord_list1);
-  addToAdjacencyMatrix(adjacency_matrix, coord_list2);
+  AddToAdjacencyMatrix(adjacency_matrix, coord_list1);
+  AddToAdjacencyMatrix(adjacency_matrix, coord_list2);
 
   return adjacency_matrix;
 }
 
-static void printMatrix(
+static void PrintMatrix(
     const std::unordered_map<int, std::unordered_set<int>>& adjacency_matrix) {
   std::cout << "adjcency matrix : " << std::endl;
   for (const auto& [node, linked_to] : adjacency_matrix) {
@@ -70,14 +67,16 @@ static void printMatrix(
   }
 }
 
-static int getNextNode(
+static int GetNextNode(
     std::unordered_map<int, std::unordered_set<int>>& adjacency_matrix,
     int removed_node) {
   const auto neighbour_list = adjacency_matrix[removed_node];
 
   adjacency_matrix.erase(removed_node);
 
-  if (adjacency_matrix.empty()) return -1;
+  if (adjacency_matrix.empty()) {
+    return -1;
+  }
 
   int min_nbr_of_neighbour = adjacency_matrix.size();
   int node_with_less_neighbour = adjacency_matrix.size();
@@ -90,9 +89,6 @@ static int getNextNode(
     if (neighbour_neighbours_list == std::end(adjacency_matrix)) {
       continue;
     }
-
-    // /!\ WARNING /!\
-        // take a random one among neighbours having the same number of neighbours here ?
 
     if (min_nbr_of_neighbour > neighbour_neighbours_list->second.size()) {
       found = true;
@@ -123,9 +119,6 @@ static int getNextNode(
   return node_with_less_neighbour;
 }
 
-// see
-// https://stackoverflow.com/questions/44376721/proper-edge-recombination-crossover-for-dna-assembly
-// for opimization
 Individual cross_over::CrossOver(Individual& parent1, Individual& parent2) {
   Individual child;
 
@@ -134,15 +127,15 @@ Individual cross_over::CrossOver(Individual& parent1, Individual& parent2) {
 
   child_coordinate_list.reserve(desired_length);
 
-  auto adjacency_matrix = buildAdjacencyMatrix(parent1.GetCoordinateList(),
+  auto adjacency_matrix = BuildAdjacencyMatrix(parent1.GetCoordinateList(),
                                                parent2.GetCoordinateList());
 
   int next_node = rand() % desired_length;
 
   while (child_coordinate_list.size() < desired_length) {
     child_coordinate_list.push_back(next_node);
-    removeFromNeighboursList(adjacency_matrix, next_node);
-    next_node = getNextNode(adjacency_matrix, next_node);
+    RemoveFromNeighboursList(adjacency_matrix, next_node);
+    next_node = GetNextNode(adjacency_matrix, next_node);
   }
 
   return child;
