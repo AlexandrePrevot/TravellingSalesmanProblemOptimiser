@@ -10,15 +10,15 @@ display_dir = os.path.abspath('display')
 sys.path.insert(0, communication_dir)
 sys.path.insert(1, display_dir)
 
-import Communicator
+import communicator
 import main_window
 
 if __name__ == '__main__':
     root = main_window.MainWindow()
-    root.set_optimize_action(Communicator.optimize)
+    root.set_optimize_action(communicator.optimize)
 
     grpc_server_thread = threading.Thread(
-        target=lambda: Communicator.serve(root.update_action), daemon=True)
+        target=lambda: communicator.serve(root.update_action), daemon=True)
     grpc_server_thread.start()
 
     root.display()
