@@ -8,6 +8,8 @@ Proposed an algorithm to find solutions close to the optimal to the Travelling S
 
 The particularity of this project is that the algorithm is entirely done in C++, but the FE is done in python and display in real time the result.
 
+- HERE : Add a gif of the result
+
 ## Table of Contents
 - [Usage](#usage)
 - [Features](#features)
@@ -15,7 +17,7 @@ The particularity of this project is that the algorithm is entirely done in C++,
 
 ## Usage
 
-GeneticAlgorithm are usefull
+GeneticAlgorithm are usefull bla bla bla
 
 
 ## Features
@@ -23,8 +25,6 @@ GeneticAlgorithm are usefull
 - set mutation rate
 - set number of individual
 - adding points
-
-
 
 
 ## Installation
@@ -35,4 +35,4 @@ GeneticAlgorithm are usefull
 
 - install gcc, cmake, gRPC, protobuff
 
-- install if all done ./run.sh [build folder] [ubuntu virtual env]
+- if all done ./run.sh [build folder] [ubuntu virtual env]
