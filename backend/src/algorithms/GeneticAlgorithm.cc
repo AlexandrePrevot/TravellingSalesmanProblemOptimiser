@@ -136,11 +136,7 @@ bool GeneticAlgorithm::Process() {
     Cycle();
     const double new_best = best_individual_.GetTotalDistance();
 
-    // std::cout << "generation " << generation_count + 1 << std::endl;
-    // std::cout << population_ << std::endl;
-
     if (new_best < current_best) {
-      std::cout << "improvment in generation " << generation_count << std::endl;
       stagnation_count_guard = 0;
       generation_count++;
       progress_callback_(best_individual_.GetCoordinateList(), new_best,

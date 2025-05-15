@@ -16,13 +16,8 @@
 
 /*
   TODO
-   handle edge cases of submission : for example selection rate must select at least 2 people
-
     make sure everything is const when needed (sometimes I had to do weird
    trickes, you'll see)
-
-   make a /binder and a /communication
-   /binder will have a class Binder that will call the logic below
 
    delete std::cout
 */
@@ -48,14 +43,10 @@ class UpdateNotificationClient {
     notification.set_score(distance);
     notification.set_generation(generation);
 
-    std::cout << "sending update message" << std::endl;
-
     grpc::ClientContext context;
     google::protobuf::Empty response;
     grpc::Status status = stub_->Update(&context, notification, &response);
-    if (status.ok()) {
-      std::cout << "message update done" << std::endl;
-    } else {
+    if (!status.ok()) {
       std::cout << "error in the message sending : " << status.error_message()
                 << std::endl;
     }
@@ -128,6 +119,4 @@ void RunServer() {
   server->Wait();
 }
 
-int main() {
-  RunServer();
-}
+int main() { RunServer(); }
