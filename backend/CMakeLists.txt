@@ -9,8 +9,8 @@ find_package(gRPC REQUIRED)
 
 set(algorithm_list
     cross_over_operator.cc
-    PopulationGenerator.cc
-    GeneticAlgorithm.cc
+    population_generator.cc
+    genetic_algorithm.cc
 )
 
 list(TRANSFORM algorithm_list PREPEND "src/algorithms/")
@@ -23,7 +23,7 @@ set(data_list
 list(TRANSFORM data_list PREPEND "src/data/")
 
 set(manager_list
-    IndividualManager.cc
+    individual_manager.cc
 )
 
 list(TRANSFORM manager_list PREPEND "src/manager/")

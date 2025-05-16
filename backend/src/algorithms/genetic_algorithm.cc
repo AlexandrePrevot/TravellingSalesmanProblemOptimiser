@@ -1,12 +1,11 @@
-#include "algorithms/GeneticAlgorithm.hpp"
+#include "algorithms/genetic_algorithm.hpp"
 
 #include <algorithm>
 #include <iostream>
 #include <memory>
 
-#include "algorithms/PopulationGenerator.hpp"
+#include "algorithms/population_generator.hpp"
 #include "algorithms/cross_over_operator.hpp"
-#include "manager/IndividualManager.hpp"
 
 static constexpr int kMaxStagnationCount = 200;
 static constexpr int kMaxPopulationSize = 1000000;

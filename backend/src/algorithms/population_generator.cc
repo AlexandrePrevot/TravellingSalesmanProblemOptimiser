@@ -1,4 +1,4 @@
-#include "algorithms/PopulationGenerator.hpp"
+#include "algorithms/population_generator.hpp"
 
 #include <algorithm>
 #include <memory>
@@ -7,7 +7,7 @@
 
 #include "data/individual.hpp"
 
-static auto rng = std::default_random_engine{std::random_device{}()};
+static auto rng = std::default_random_engine{std::random_device {}()};
 
 void population_generator::ResetIndividual(Individual& individual,
                                            const double individual_size) {

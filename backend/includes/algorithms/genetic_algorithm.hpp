@@ -6,7 +6,7 @@
 #include "data/coordinate.hpp"
 #include "data/individual.hpp"
 #include "data/population.hpp"
-#include "manager/IndividualManager.hpp"
+#include "manager/individual_manager.hpp"
 
 class GeneticAlgorithm {
  public:

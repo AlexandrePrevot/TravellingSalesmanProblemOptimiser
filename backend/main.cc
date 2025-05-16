@@ -7,20 +7,19 @@
 #include <string>
 #include <vector>
 
-#include "algorithms/GeneticAlgorithm.hpp"
+#include "algorithms/genetic_algorithm.hpp"
 #include "generated/request.grpc.pb.h"
 #include "generated/request.pb.h"
 
 /*
   TODO
-    make sure everything is const when needed (sometimes I had to do weird
-   trickes, you'll see)
-
-   rename files
-
-   do the readme
-
+   rename files in c++ (file : snake_case)
+   finish the readme
    delete std::cout
+  stop using the FE when computing
+  solve small amount of points bug
+  last synchronous reply should update FE
+
 */
 
 class UpdateNotificationClient {

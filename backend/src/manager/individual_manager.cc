@@ -1,4 +1,4 @@
-#include "manager/IndividualManager.hpp"
+#include "manager/individual_manager.hpp"
 
 #include <algorithm>
 #include <utility>
