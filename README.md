@@ -24,6 +24,11 @@ This project just uses the best algorithm combination found in the previous proj
 
 ## Features
 
+- Optimise Button will try to find the best solution
+- Click on the solution canvas to add points yourself
+- Real time update button allows the FE to be updated as the process is running
+- You cannot optimise 2 configurations at the same time from the F.E.
+- BestScore of the graph is the Fitness value : The sum of the SQUARE of the distance between points
 
 
 ## Tech Stack & Architecture

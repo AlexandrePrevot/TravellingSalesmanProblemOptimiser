@@ -15,6 +15,7 @@
   TODO
   finish the readme
   remove venv from argument in .sh script
+  mutation rate should really update mutation rate
 */
 
 class UpdateNotificationClient {
