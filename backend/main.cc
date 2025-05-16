@@ -1,4 +1,5 @@
 #include <grpcpp/grpcpp.h>
+#include <grpcpp/support/status.h>
 
 #include <cstdlib>
 #include <ctime>
@@ -10,13 +11,6 @@
 #include "algorithms/genetic_algorithm.hpp"
 #include "generated/request.grpc.pb.h"
 #include "generated/request.pb.h"
-
-/*
-  TODO
-  finish the readme
-  remove venv from argument in .sh script
-  mutation rate should really update mutation rate
-*/
 
 class UpdateNotificationClient {
  public:
@@ -74,8 +68,7 @@ class OptimizationServiceImpl final : public TSPO::Optimization::Service {
     GeneticAlgorithm algorithm;
     algorithm.SetIndividualSize(map.size());
     algorithm.SetPopulationSize(optimization_request->individualnumber());
-    algorithm.SetSelectionRate(
-        optimization_request->mutationrate());  // /!\ to fix
+    algorithm.SetSelectionRate(optimization_request->selectionrate());
     algorithm.SetRealTimeCallBack(optimization_request->realtimeupdate());
     algorithm.SetMap(map);
 
@@ -91,6 +84,11 @@ class OptimizationServiceImpl final : public TSPO::Optimization::Service {
     algorithm.SetProgressCallback(progress_lambda);
 
     const bool success = algorithm.Process();
+
+    if (!success) {
+      return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT,
+                          "Some given parameters are invalid");
+    }
 
     std::vector<int> best = algorithm.BestIndividual().GetCoordinateList();
 

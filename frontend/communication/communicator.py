@@ -26,7 +26,8 @@ class OptimizationServicer(request_pb2_grpc.OptimizationServicer):
         solution = []
         for coord in request.coordinates:
             solution.append([coord.coordX, coord.coordY])
-        self.__update_callback(solution, request.score, request.generation, True)
+        self.__update_callback(solution, request.score, request.generation,
+                               True)
         return Empty()
 
     def __init__(self, update_callback):
@@ -52,21 +53,28 @@ def serve(update_action):
     server.wait_for_termination()
 
 
-def optimize(coordinate_list, mutation_rate, individual_number,
+def optimize(coordinate_list, selection_rate, individual_number,
              real_time_update):
     """Sends an optimization request to the BE"""
     channel = grpc.insecure_channel('localhost:50051')
     stub = request_pb2_grpc.OptimizationStub(channel)
     optimization_req = request_pb2.OptimizationRequest()
     optimization_req.individualNumber = individual_number
-    optimization_req.mutationRate = mutation_rate
+    optimization_req.selectionRate = selection_rate
     optimization_req.realTimeUpdate = real_time_update
     for coord in coordinate_list:
         msg_coord = optimization_req.coordinates.add()
         msg_coord.coordX = coord[0]
         msg_coord.coordY = coord[1]
 
-    response = stub.Optimize(optimization_req)
+    response = None
+    try:
+        response = stub.Optimize(optimization_req)
+    except grpc.RpcError as err:
+        print("communication with B.E. failed : " + str(err))
+
+    if response is None:
+        return []
 
     solution = []
     for coord in response.coordinates:

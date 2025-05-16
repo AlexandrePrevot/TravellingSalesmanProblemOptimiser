@@ -25,6 +25,7 @@ This project just uses the best algorithm combination found in the previous proj
 ## Features
 
 - Optimise Button will try to find the best solution
+- when adding a parameter, you have to click on "submit ..." button to really consider it
 - Click on the solution canvas to add points yourself
 - Real time update button allows the FE to be updated as the process is running
 - You cannot optimise 2 configurations at the same time from the F.E.

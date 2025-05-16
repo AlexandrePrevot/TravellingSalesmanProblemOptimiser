@@ -15,7 +15,7 @@ WINDOW_TITLE = "Travelling Salesman Problem Optimiser"
 SOLUTION_WINDOW_RATIO = 0.8
 POINT_SIZE = 5
 LINE_WIDTH = 1
-DEFAULT_MUTATION_RATE = 0.2
+DEFAULT_SELECTION_RATE = 0.2
 DEFAULT_INDIVIDUAL_NUMBER = 200
 
 matplotlib.use("tkAgg")  # make plotlib using tkinter
@@ -121,13 +121,21 @@ class MainWindow:
 
     def __get_number_of_individual(self):
         try:
-            self.__individual_number = int(self.__individual_entry.get())
+            number = int(self.__individual_entry.get())
+            if number < 0:
+                raise ValueError
+            self.__individual_number = number
         except ValueError:
             print("Please enter a valid number")
 
-    def __get_mutation_rate(self):
+    def __get_selection_rate(self):
         try:
-            self.__mutation_rate = float(self.__mutation_rate_entry.get())
+            rate = float(self.__selection_rate_entry.get())
+            if rate > 0 and rate <= 1:
+                self.__selection_rate = float(
+                    self.__selection_rate_entry.get())
+            else:
+                raise ValueError
         except ValueError:
             print("Please enter a valid number")
 
@@ -138,7 +146,7 @@ class MainWindow:
         except ValueError:
             print("Please enter a valid number")
 
-        if to_generate == 0:
+        if to_generate <= 0:
             return
 
         self.__clear()
@@ -158,7 +166,7 @@ class MainWindow:
 
     def __trigger_optimisation_then_update(self):
         result = self.__optimize_action(self.__coordinates,
-                                        self.__mutation_rate,
+                                        self.__selection_rate,
                                         self.__individual_number,
                                         self.__real_time_update.get() == 1)
         self.__terminate_process_action(result)
@@ -179,7 +187,7 @@ class MainWindow:
 
         self.__optimize_action = None
         self.__individual_number = DEFAULT_INDIVIDUAL_NUMBER
-        self.__mutation_rate = DEFAULT_MUTATION_RATE
+        self.__selection_rate = DEFAULT_SELECTION_RATE
 
         self.__main_frame = tk.Tk()
         self.__main_frame.title(WINDOW_TITLE)
@@ -280,11 +288,11 @@ class MainWindow:
             command=self.__get_number_of_individual)
         individual_entry_button.pack()
 
-        self.__mutation_rate_entry = tk.Entry(graph_frame)
-        self.__mutation_rate_entry.pack(pady=10)
+        self.__selection_rate_entry = tk.Entry(graph_frame)
+        self.__selection_rate_entry.pack(pady=10)
         mutation_rate_button = tk.Button(graph_frame,
-                                         text="submit mutation rate",
-                                         command=self.__get_mutation_rate)
+                                         text="submit selection rate",
+                                         command=self.__get_selection_rate)
         mutation_rate_button.pack()
 
         self.__random_generation_entry = tk.Entry(graph_frame)
