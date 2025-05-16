@@ -13,13 +13,8 @@
 
 /*
   TODO
-   rename files in c++ (file : snake_case)
-   finish the readme
-   delete std::cout
-  stop using the FE when computing
-  solve small amount of points bug
-  last synchronous reply should update FE
-
+  finish the readme
+  remove venv from argument in .sh script
 */
 
 class UpdateNotificationClient {

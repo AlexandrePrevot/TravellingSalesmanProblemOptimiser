@@ -48,23 +48,27 @@ class MainWindow:
         self.__line.set_data([], [])
         self.__axis.set_ylim(0, 10)
         self.__plot_canvas.draw()
-        threading.Thread(target=lambda: self.__optimize_action(
-            self.__coordinates, self.__mutation_rate, self.__individual_number,
-            self.__real_time_update.get() == 1)).start()
+        self.__optimising_tag_id = self.__solution_canvas.create_window(
+            10, 10, window=self.__optimising_tag, anchor="nw")
 
-    def update_action(self, solution, score, generation):
+        self.__set_algo_blocker_button(False)
+        threading.Thread(
+            target=self.__trigger_optimisation_then_update).start()
+
+    def update_action(self, solution, score, generation, update_graph):
         """ action to do when the FE should be updated
         
         update the solution and the graph.
         """
         self.__worst_score = max(score, self.__worst_score)
-        self.__scores.append(score)
-        self.__generation.append(
-            generation)  # maybe should add individual generations here
-        self.__line.set_data(self.__generation, self.__scores)
-        self.__axis.set_xlim(0, generation)
-        self.__axis.set_ylim(0, max(score, self.__worst_score))
-        self.__plot_canvas.draw()
+        if update_graph:
+            self.__scores.append(score)
+            self.__generation.append(
+                generation)  # maybe should add individual generations here
+            self.__line.set_data(self.__generation, self.__scores)
+            self.__axis.set_xlim(0, generation)
+            self.__axis.set_ylim(0, max(score, self.__worst_score))
+            self.__plot_canvas.draw()
         self.__clear_solution()
         self.__show_result(solution)
 
@@ -145,6 +149,28 @@ class MainWindow:
 
             self.__create_and_add_point(pos_x, pos_y)
 
+    def __terminate_process_action(self, solution):
+        if self.__optimising_tag_id is not None:
+            self.__solution_canvas.delete(self.__optimising_tag_id)
+            self.__optimising_tag_id = None
+        self.__set_algo_blocker_button(True)
+        self.update_action(solution, -1, -1, False)
+
+    def __trigger_optimisation_then_update(self):
+        result = self.__optimize_action(self.__coordinates,
+                                        self.__mutation_rate,
+                                        self.__individual_number,
+                                        self.__real_time_update.get() == 1)
+        self.__terminate_process_action(result)
+
+    def __set_algo_blocker_button(self, activate):
+        if activate:
+            self.__optimize_button.config(state="normal")
+            self.__clear_button.config(state="normal")
+        else:
+            self.__optimize_button.config(state="disabled")
+            self.__clear_button.config(state="disabled")
+
     def __init__(self):
         self.__coordinates = []
         self.__scores = []
@@ -201,7 +227,11 @@ class MainWindow:
         self.__solution_canvas.bind("<Button-1>",
                                     self.__create_and_add_point_with_event)
         self.__solution_canvas.pack()  # Centered vertically
-
+        self.__optimising_tag = ttk.Label(self.__solution_canvas,
+                                          background="white",
+                                          text="optimising...",
+                                          font=("Arial", 10))
+        self.__optimising_tag_id = None
         graph_canvas = tk.Canvas(graph_frame,
                                  width=graph_canvas_width,
                                  height=graph_canvas_height,
@@ -209,7 +239,7 @@ class MainWindow:
                                  highlightthickness=1)
         graph_canvas.pack()  # Centered vertically
 
-        self.__real_time_update = tk.IntVar()
+        self.__real_time_update = tk.IntVar(value=1)
         real_time_update_checkbox = tk.Checkbutton(
             graph_frame,
             text='real-time update',
@@ -217,30 +247,30 @@ class MainWindow:
             onvalue=1,
             offvalue=0)
         real_time_update_checkbox.pack(side=tk.LEFT)
-        optimize_button = tk.Button(graph_frame,
-                                    text="Optimise",
-                                    command=self.optimize_action,
-                                    activebackground="blue",
-                                    activeforeground="white",
-                                    anchor="center",
-                                    bd=3,
-                                    bg="lightgray",
-                                    cursor="hand2",
-                                    disabledforeground="gray",
-                                    fg="black",
-                                    font=("Arial", 12),
-                                    height=2,
-                                    highlightbackground="black",
-                                    highlightcolor="green",
-                                    highlightthickness=2,
-                                    justify="center",
-                                    overrelief="raised",
-                                    padx=10,
-                                    pady=5,
-                                    width=15,
-                                    wraplength=100)
+        self.__optimize_button = tk.Button(graph_frame,
+                                           text="Optimise",
+                                           command=self.optimize_action,
+                                           activebackground="blue",
+                                           activeforeground="white",
+                                           anchor="center",
+                                           bd=3,
+                                           bg="lightgray",
+                                           cursor="hand2",
+                                           disabledforeground="gray",
+                                           fg="black",
+                                           font=("Arial", 12),
+                                           height=2,
+                                           highlightbackground="black",
+                                           highlightcolor="green",
+                                           highlightthickness=2,
+                                           justify="center",
+                                           overrelief="raised",
+                                           padx=10,
+                                           pady=5,
+                                           width=15,
+                                           wraplength=100)
 
-        optimize_button.pack(padx=20, pady=20)
+        self.__optimize_button.pack(padx=20, pady=20)
 
         self.__individual_entry = tk.Entry(graph_frame)
         self.__individual_entry.pack(pady=10)
@@ -265,10 +295,10 @@ class MainWindow:
             command=self.__generate_random_coordinates)
         random_generation_button.pack()
 
-        clear_button = tk.Button(graph_frame,
-                                 text="clear",
-                                 command=self.__clear)
-        clear_button.pack()
+        self.__clear_button = tk.Button(graph_frame,
+                                        text="clear",
+                                        command=self.__clear)
+        self.__clear_button.pack()
 
         # matplotlib
         self.__figure = Figure(figsize=(5, 4),

@@ -1,7 +1,6 @@
 #include "algorithms/genetic_algorithm.hpp"
 
 #include <algorithm>
-#include <iostream>
 #include <memory>
 
 #include "algorithms/population_generator.hpp"
@@ -92,7 +91,6 @@ bool GeneticAlgorithm::Cycle() {
 }
 
 bool GeneticAlgorithm::Process() {
-  std::cout << "processing" << std::endl;
   if (individual_size_ <= 0) {
     return false;
   }
@@ -121,17 +119,12 @@ bool GeneticAlgorithm::Process() {
     return false;
   }
 
-  std::cout << "setting up" << std::endl;
-
   SetUpPopulation();
   SetUpBestIndividual();
   SetUpIndividualManager();
 
   int stagnation_count_guard = 0;
 
-  std::cout << "-------------------old population-------------------"
-            << std::endl;
-  std::cout << population_ << std::endl;
   int generation_count = 0;
   while (stagnation_count_guard <= kMaxStagnationCount) {
     const double current_best = best_individual_.GetTotalDistance();
@@ -151,13 +144,5 @@ bool GeneticAlgorithm::Process() {
     stagnation_count_guard++;
     generation_count++;
   }
-
-  std::cout << "-------------------new population-------------------"
-            << std::endl;
-  std::cout << population_ << std::endl;
-
-  std::cout << "needed " << generation_count << " generations" << std::endl;
-  std::cout << "best individual : " << best_individual_ << std::endl;
-
   return true;
 }

@@ -26,7 +26,7 @@ class OptimizationServicer(request_pb2_grpc.OptimizationServicer):
         solution = []
         for coord in request.coordinates:
             solution.append([coord.coordX, coord.coordY])
-        self.__update_callback(solution, request.score, request.generation)
+        self.__update_callback(solution, request.score, request.generation, True)
         return Empty()
 
     def __init__(self, update_callback):

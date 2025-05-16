@@ -53,20 +53,6 @@ static std::unordered_map<int, std::unordered_set<int>> BuildAdjacencyMatrix(
   return adjacency_matrix;
 }
 
-static void PrintMatrix(
-    const std::unordered_map<int, std::unordered_set<int>>& adjacency_matrix) {
-  std::cout << "adjcency matrix : " << std::endl;
-  for (const auto& [node, linked_to] : adjacency_matrix) {
-    std::cout << " node : " << node << " linked to : { ";
-
-    for (const int linked_node : linked_to) {
-      std::cout << linked_node << ", ";
-    }
-
-    std::cout << " } \n";
-  }
-}
-
 static int GetNextNode(
     std::unordered_map<int, std::unordered_set<int>>& adjacency_matrix,
     int removed_node) {
