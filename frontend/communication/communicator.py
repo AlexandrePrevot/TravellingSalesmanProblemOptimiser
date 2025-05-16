@@ -12,6 +12,7 @@ import request_pb2
 import request_pb2_grpc
 from google.protobuf.empty_pb2 import Empty
 
+
 # gRPC generation is not necessarily style guide friendly
 # pylint: disable=too-few-public-methods
 # pylint: disable=invalid-name
@@ -30,6 +31,8 @@ class OptimizationServicer(request_pb2_grpc.OptimizationServicer):
 
     def __init__(self, update_callback):
         self.__update_callback = update_callback
+
+
 # pylint: enable=too-few-public-methods
 # pylint: enable=invalid-name
 
@@ -49,14 +52,15 @@ def serve(update_action):
     server.wait_for_termination()
 
 
-def optimize(coordinate_list, mutation_rate, individual_number):
+def optimize(coordinate_list, mutation_rate, individual_number,
+             real_time_update):
     """Sends an optimization request to the BE"""
     channel = grpc.insecure_channel('localhost:50051')
     stub = request_pb2_grpc.OptimizationStub(channel)
     optimization_req = request_pb2.OptimizationRequest()
     optimization_req.individualNumber = individual_number
     optimization_req.mutationRate = mutation_rate
-
+    optimization_req.realTimeUpdate = real_time_update
     for coord in coordinate_list:
         msg_coord = optimization_req.coordinates.add()
         msg_coord.coordX = coord[0]

@@ -13,7 +13,10 @@ static constexpr int kMaxPopulationSize = 1000000;
 static constexpr int kMaxIndividualSize = 1000000;
 
 GeneticAlgorithm::GeneticAlgorithm()
-    : population_size_(0), individual_size_(0), selection_rate_(-1.) {}
+    : population_size_(0),
+      individual_size_(0),
+      selection_rate_(-1.),
+      real_time_callback_(false) {}
 
 static void SortPopulation(Population& unsorted_population) {
   auto& population = unsorted_population.GetPopulation();
@@ -139,8 +142,10 @@ bool GeneticAlgorithm::Process() {
     if (new_best < current_best) {
       stagnation_count_guard = 0;
       generation_count++;
-      progress_callback_(best_individual_.GetCoordinateList(), new_best,
-                         generation_count);
+      if (real_time_callback_) {
+        progress_callback_(best_individual_.GetCoordinateList(), new_best,
+                           generation_count);
+      }
       continue;
     }
 

@@ -14,6 +14,9 @@ However this design makes it hard to interact with the algorithm as it run. Usin
 
 This project just uses the best algorithm combination found in the previous project, but re-implement them to be gRPC-friendly.
 
+
+![Program running](images/TSP_showoff.gif)
+
 ## Table of Contents
 - [Features](#Features)
 - [Tech Stack & Architecture](#TechStack&Architecture)
@@ -21,9 +24,6 @@ This project just uses the best algorithm combination found in the previous proj
 
 ## Features
 
-- set mutation rate
-- set number of individual
-- adding points
 
 
 ## Tech Stack & Architecture

@@ -2,7 +2,6 @@
 import tkinter as tk
 from tkinter import ttk
 
-
 import random
 import threading
 
@@ -12,7 +11,7 @@ from matplotlib.figure import Figure
 
 WINDOW_MIN_SIZE = 1000
 WINDOW_MAX_SIZE = 2000
-WINDOW_TITLE = "Travelling Salesman Problem Optimizer"
+WINDOW_TITLE = "Travelling Salesman Problem Optimiser"
 SOLUTION_WINDOW_RATIO = 0.8
 POINT_SIZE = 5
 LINE_WIDTH = 1
@@ -50,8 +49,8 @@ class MainWindow:
         self.__axis.set_ylim(0, 10)
         self.__plot_canvas.draw()
         threading.Thread(target=lambda: self.__optimize_action(
-            self.__coordinates, self.__mutation_rate, self.__individual_number)
-                         ).start()
+            self.__coordinates, self.__mutation_rate, self.__individual_number,
+            self.__real_time_update.get() == 1)).start()
 
     def update_action(self, solution, score, generation):
         """ action to do when the FE should be updated
@@ -158,24 +157,32 @@ class MainWindow:
 
         self.__main_frame = tk.Tk()
         self.__main_frame.title(WINDOW_TITLE)
-        self.__main_frame.configure(background="grey")
+        self.__main_frame.configure(background="light grey")
         self.__main_frame.minsize(WINDOW_MIN_SIZE, WINDOW_MIN_SIZE)
         self.__main_frame.maxsize(WINDOW_MAX_SIZE, WINDOW_MAX_SIZE)
 
         result_frame = tk.Frame(self.__main_frame)
         result_frame.pack(anchor="center", expand=True)
 
-        solution_frame = tk.Frame(result_frame, bg="white")
-        solution_frame.pack(padx=20, side=tk.LEFT, expand=True, fill=tk.Y)
+        solution_frame = tk.Frame(result_frame,
+                                  bg="light grey",
+                                  highlightbackground="black",
+                                  highlightthickness=1)
+        solution_frame.pack(side=tk.LEFT, expand=True, fill=tk.Y)
 
-        graph_frame = tk.Frame(result_frame, bg="white")
-        graph_frame.pack(padx=20, side=tk.RIGHT, expand=True, fill=tk.Y)
+        graph_frame = tk.Frame(result_frame,
+                               bg="light grey",
+                               highlightbackground="black",
+                               highlightthickness=1)
+        graph_frame.pack(side=tk.RIGHT, expand=True, fill=tk.Y)
 
         self.__graph_label = ttk.Label(graph_frame,
-                                       text="Result: 0.000",
+                                       background="light grey",
+                                       text="Result",
                                        font=("Arial", 20))
         self.__graph_label.pack(pady=20)
         self.__solution_label = ttk.Label(solution_frame,
+                                          background="light grey",
                                           text="Solution",
                                           font=("Arial", 20))
         self.__solution_label.pack(pady=20)
@@ -193,17 +200,25 @@ class MainWindow:
                                            highlightthickness=0)
         self.__solution_canvas.bind("<Button-1>",
                                     self.__create_and_add_point_with_event)
-        self.__solution_canvas.pack(pady=100)  # Centered vertically
+        self.__solution_canvas.pack()  # Centered vertically
 
         graph_canvas = tk.Canvas(graph_frame,
                                  width=graph_canvas_width,
                                  height=graph_canvas_height,
                                  bg="white",
-                                 highlightthickness=0)
-        graph_canvas.pack(pady=100)  # Centered vertically
+                                 highlightthickness=1)
+        graph_canvas.pack()  # Centered vertically
 
-        optimize_button = tk.Button(self.__main_frame,
-                                    text="Optimize",
+        self.__real_time_update = tk.IntVar()
+        real_time_update_checkbox = tk.Checkbutton(
+            graph_frame,
+            text='real-time update',
+            variable=self.__real_time_update,
+            onvalue=1,
+            offvalue=0)
+        real_time_update_checkbox.pack(side=tk.LEFT)
+        optimize_button = tk.Button(graph_frame,
+                                    text="Optimise",
                                     command=self.optimize_action,
                                     activebackground="blue",
                                     activeforeground="white",
@@ -227,30 +242,30 @@ class MainWindow:
 
         optimize_button.pack(padx=20, pady=20)
 
-        self.__individual_entry = tk.Entry(self.__main_frame)
+        self.__individual_entry = tk.Entry(graph_frame)
         self.__individual_entry.pack(pady=10)
         individual_entry_button = tk.Button(
-            self.__main_frame,
+            graph_frame,
             text="submit number of individual",
             command=self.__get_number_of_individual)
         individual_entry_button.pack()
 
-        self.__mutation_rate_entry = tk.Entry(self.__main_frame)
+        self.__mutation_rate_entry = tk.Entry(graph_frame)
         self.__mutation_rate_entry.pack(pady=10)
-        mutation_rate_button = tk.Button(self.__main_frame,
+        mutation_rate_button = tk.Button(graph_frame,
                                          text="submit mutation rate",
                                          command=self.__get_mutation_rate)
         mutation_rate_button.pack()
 
-        self.__random_generation_entry = tk.Entry(self.__main_frame)
+        self.__random_generation_entry = tk.Entry(graph_frame)
         self.__random_generation_entry.pack(pady=10)
         random_generation_button = tk.Button(
-            self.__main_frame,
+            graph_frame,
             text="generate random coordinates",
             command=self.__generate_random_coordinates)
         random_generation_button.pack()
 
-        clear_button = tk.Button(self.__main_frame,
+        clear_button = tk.Button(graph_frame,
                                  text="clear",
                                  command=self.__clear)
         clear_button.pack()
@@ -259,8 +274,10 @@ class MainWindow:
         self.__figure = Figure(figsize=(5, 4),
                                dpi=100)  # dpi = dots per inch (resolution)
         self.__axis = self.__figure.add_subplot(111)
-        self.__line = self.__axis.plot([], [], "r-")[0]
+        self.__line = self.__axis.plot([], [], "r-", marker='o')[0]
         self.__axis.set_ylim(0, 100)
+        self.__axis.grid(True)
+        self.__axis.set(xlabel="Number of generations", ylabel="Best score")
         self.__plot_canvas = FigureCanvasTkAgg(self.__figure,
                                                master=graph_canvas)
         self.__plot_canvas.get_tk_widget().pack(fill="both", expand=True)

@@ -19,6 +19,7 @@ message OptimizationRequest {
     repeated Coordinate coordinates = 1;
     double mutationRate = 2;
     int32 individualNumber = 3;
+    bool realTimeUpdate = 4;
 }
 
 message OptimizationReply {

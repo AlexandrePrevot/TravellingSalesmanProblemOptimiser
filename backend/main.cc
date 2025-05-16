@@ -81,6 +81,7 @@ class OptimizationServiceImpl final : public TSPO::Optimization::Service {
     algorithm.SetPopulationSize(optimization_request->individualnumber());
     algorithm.SetSelectionRate(
         optimization_request->mutationrate());  // /!\ to fix
+    algorithm.SetRealTimeCallBack(optimization_request->realtimeupdate());
     algorithm.SetMap(map);
 
     UpdateNotificationClient update_notification_client(

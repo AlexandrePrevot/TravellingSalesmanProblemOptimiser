@@ -33,6 +33,10 @@ class GeneticAlgorithm {
     progress_callback_ = progress_callback;
   }
 
+  void SetRealTimeCallBack(bool real_time_callback) {
+    real_time_callback_ = real_time_callback;
+  }
+
   Individual BestIndividual() { return best_individual_; }
 
   bool Process();  // returns wether the process is a success or not
@@ -46,6 +50,7 @@ class GeneticAlgorithm {
   std::size_t population_size_;
   std::size_t individual_size_;
   double selection_rate_;
+  bool real_time_callback_;
 
   void SetUpPopulation();
   void SetUpBestIndividual();
