@@ -72,8 +72,8 @@ class OptimizationServiceImpl final : public TSPO::Optimization::Service {
     algorithm.SetRealTimeCallBack(optimization_request->realtimeupdate());
     algorithm.SetMap(map);
 
-    UpdateNotificationClient update_notification_client(
-        grpc::CreateChannel("[::]:50052", grpc::InsecureChannelCredentials()));
+    UpdateNotificationClient update_notification_client(grpc::CreateChannel(
+        "tsp_frontend:50052", grpc::InsecureChannelCredentials()));
 
     auto progress_lambda = [&update_notification_client, &map](
                                std::vector<int>& coordinate_list,
@@ -103,7 +103,7 @@ class OptimizationServiceImpl final : public TSPO::Optimization::Service {
 };
 
 void RunServer() {
-  const std::string server_address("0.0.0.0:50051");
+  const std::string server_address("tsp_backend:50051");
   OptimizationServiceImpl optimization_service;
 
   grpc::ServerBuilder builder;

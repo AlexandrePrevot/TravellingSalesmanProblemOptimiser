@@ -56,7 +56,7 @@ def serve(update_action):
 def optimize(coordinate_list, selection_rate, individual_number,
              real_time_update):
     """Sends an optimization request to the BE"""
-    channel = grpc.insecure_channel('localhost:50051')
+    channel = grpc.insecure_channel('tsp_backend:50051')
     stub = request_pb2_grpc.OptimizationStub(channel)
     optimization_req = request_pb2.OptimizationRequest()
     optimization_req.individualNumber = individual_number

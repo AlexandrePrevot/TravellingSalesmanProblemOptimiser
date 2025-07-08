@@ -52,6 +52,7 @@ RUN /opt/grpc_install/bin/protoc --proto_path=messages/ --cpp_out=backend/genera
 
 WORKDIR /app/build
 
+# add grpc/install to find dependencies 
 RUN cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="/opt/grpc_install" -DCMAKE_EXPORT_COMPILE_COMMANDS=1 ../backend/ && \
     make -j 3
 
@@ -59,6 +60,7 @@ RUN cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="/opt/grpc_install" -DC
 
 FROM ubuntu:24.04
 
+EXPOSE 50051
 COPY --from=tsp_builder /app/build/TravellingSalesmanProblemOptimiser /usr/local/bin/tsp_server
 
-# might use entrypoint to start application right away
+ENTRYPOINT ["/usr/local/bin/tsp_server"]
