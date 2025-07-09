@@ -2,8 +2,9 @@
 # it is necessary to run "xhost +local:docker" before building
 # this image then run with these options
 #
-# to display the frontend, you can then run
-# sudo docker run -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix [image id]
+# to display the frontend, add options
+# -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix [image id]
+
 
 # -------- stage 1 : install python deps --------
 FROM python:3.12 AS tsp_python_deps_builder
