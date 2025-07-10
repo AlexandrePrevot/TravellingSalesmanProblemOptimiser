@@ -24,7 +24,6 @@ FROM tsp_python_deps_builder AS tsp_python_builder
 
 
 COPY frontend /app/frontend
-WORKDIR /app/frontend
 
 WORKDIR /app
 
@@ -37,6 +36,8 @@ COPY messages /app/messages
 RUN python3 -m grpc_tools.protoc --proto_path=messages/ \
     --python_out=frontend/generated/ --pyi_out=frontend/generated/ \
     --grpc_python_out=frontend/generated/ messages/request.proto
+
+WORKDIR /app/frontend
 
 EXPOSE 50052
 
